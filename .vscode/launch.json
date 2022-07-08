@@ -1,0 +1,41 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "gossip_frontend",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "Samsung",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "emulator-5554",
+        },
+        {
+            "name": "Copy",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "emulator-5556"
+        },
+        {
+            "name": "Realme",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "R87DXO7LY9C6KB69",
+        }
+    ],
+    "compounds": [
+        {
+            "name": "All Devices",
+            "configurations": [
+                "Samsung",
+                "Copy",
+                "Realme"
+            ]
+        }
+    ]
+}
