@@ -5,11 +5,13 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:gossip_frontend/main.dart';
 import 'package:gossip_frontend/utility/widget/alerbox.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_cropper/image_cropper.dart';
 import '../../../database/hive_handler.dart';
+import '../../../utility/gbp/gbProto.pb.dart' as gbp;
 import 'imagepreview.dart';
 import 'updateNumber.dart';
 
@@ -37,7 +39,6 @@ class _MyProfileState extends State<MyProfile> {
     User userData = User();
     userData.toObject(widget.hiveHandler.userDataBox.get("userData")!);
     myData = userData;
-    // myData = hiveHandler.getUserData();
   }
 
   @override
@@ -196,6 +197,7 @@ class _MyProfileState extends State<MyProfile> {
                           IconButton(
                               onPressed: () {
                                 print("Goinng Invisible");
+                                print(widget.hiveHandler.connectionsBox.values.toList());
                               },
                               icon: const Icon(Icons.settings, color: Color.fromARGB(255, 28, 29, 77))),
                           IconButton(
@@ -221,10 +223,45 @@ class _MyProfileState extends State<MyProfile> {
                 width: double.infinity,
                 child: Center(
                   child: Scrollbar(
-                    isAlwaysShown: true,
                     child: ListView(
                       children: [
                         // Number
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width/2.7,
+                                  height: 3,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.all(Radius.circular(50.0))
+                                  )
+                                ),
+                              ),
+                              const Text("Info",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width/2.7,
+                                  height: 3,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.all(Radius.circular(50.0))
+                                  )
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0, left: 8, right: 8),
                           child: Container(
@@ -298,30 +335,30 @@ class _MyProfileState extends State<MyProfile> {
                                   ),
                                 ],
                               ),
-                              trailing: Material(
-                                type: MaterialType.transparency,
-                                child: IconButton(
-                                  splashRadius: 20,
-                                  icon: const Icon(
-                                    Icons.edit,
-                                    color: Color.fromARGB(255, 255, 255, 255),
-                                  ),
-                                  onPressed: () {
-                                    print("Edit clicked");
-                                    showDialog(
-                                      context: context, 
-                                      builder: (context) => popUpInputBox(
-                                        title: "Update Name!",
-                                        mainBtnName: "Update", 
-                                        hintText: "New Name", 
-                                        onTap: (value) {
+                              // trailing: Material(
+                              //   type: MaterialType.transparency,
+                              //   child: IconButton(
+                              //     splashRadius: 20,
+                              //     icon: const Icon(
+                              //       Icons.edit,
+                              //       color: Color.fromARGB(255, 255, 255, 255),
+                              //     ),
+                              //     onPressed: () {
+                              //       print("Edit clicked");
+                              //       showDialog(
+                              //         context: context, 
+                              //         builder: (context) => popUpInputBox(
+                              //           title: "Update Name!",
+                              //           mainBtnName: "Update", 
+                              //           hintText: "New Name", 
+                              //           onTap: (value) {
                                           
-                                        }
-                                      )
-                                    );
-                                  }
-                                ),
-                              ),
+                              //           }
+                              //         )
+                              //       );
+                              //     }
+                              //   ),
+                              // ),
                             ),
                           ),
                         ),
@@ -410,6 +447,88 @@ class _MyProfileState extends State<MyProfile> {
                             ),
                           ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15.0, left: 8, right: 8, bottom: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width/2.7,
+                                  height: 3,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.all(Radius.circular(50.0))
+                                  )
+                                ),
+                              ),
+                              const Text("Action",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width/2.7,
+                                  height: 3,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.all(Radius.circular(50.0))
+                                  )
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0, left: 8, right: 8),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Color.fromARGB(255, 136, 54, 54),
+                              borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text("Log Out"),
+                                IconButton(
+                                  icon: const Icon(Icons.logout_rounded),
+                                  onPressed: () {
+                                    print("logout clicked");
+                                    Map<String, String> allData = {
+                                     "mid": myData.mid
+                                    };
+                          
+                                    String body = json.encode(allData);
+                          
+                                    Future<http.Response> fresponse = http.post(
+                                      Uri.parse("http://$address:8080/logout"),
+                                      body: body
+                                    );
+                                    fresponse.then((value) {
+                                      if (value.statusCode == 200) {
+                                        gbp.Response response = gbp.Response.fromBuffer(value.bodyBytes);
+                                        if (response.status) {
+                                          widget.hiveHandler.connectionsBox.clear();
+                                          widget.hiveHandler.encryptedTempBox.clear();
+                                          widget.hiveHandler.gossipsBox.clear();
+                                          widget.hiveHandler.recentGossipsBox.clear();
+                                          widget.hiveHandler.tempBox.clear();
+                                          widget.hiveHandler.userDataBox.clear();
+                                          setState(() {});
+                                          Phoenix.rebirth(context);
+                                        }
+                                      }
+                                    });
+                                  }
+                                )
+                              ],
+                            )
+                          )
+                        )
                       ],
                     ),
                   )

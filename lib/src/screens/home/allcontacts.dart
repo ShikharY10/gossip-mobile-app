@@ -48,6 +48,9 @@ class _AllContactsState extends State<AllContacts> {
           allContacts[i].done = true;
         } else if (event.type == 0) {
           allContacts[i].done = false;
+        } else if (event.type == 2) {
+          allContacts[i].done = true;
+          allContacts[i].inlogin = false;
         }
         allContacts[i].inProcess = false;
         setState(() {});
@@ -167,7 +170,7 @@ class _AllContactsState extends State<AllContacts> {
                                   color: Color.fromARGB(255, 135, 212, 182)
                                 )
                               ) : Icon( allContacts[i].done ? CustomHandShakeIcons.handshake_alt_slash : CustomHandShakeIcons.handshake,
-                                color: allContacts[i].done ? Color.fromARGB(255, 135, 212, 182) : Colors.grey
+                                color: allContacts[i].inlogin ? Colors.orange : allContacts[i].done ? Color.fromARGB(255, 135, 212, 182) : Colors.grey
                               ),
                               onPressed: () async {
                                 showDialog(
@@ -325,7 +328,6 @@ class _AllContactsState extends State<AllContacts> {
                   setState(() {
                     allContacts[index].blocked = false;
                     allContacts[index].intoggleblock = false;
-
                   });
                   Uint8List strAll = internalgbp.Contacts(all: allContacts).writeToBuffer();
                   widget.hiveHandler.encryptedTempBox.put("contacts", String.fromCharCodes(strAll));
@@ -438,6 +440,7 @@ class _AllContactsState extends State<AllContacts> {
                     inProcess: false,
                     blocked: false,
                     intoggleblock: false,
+                    inlogin: false,
                   );
                   allContacts.add(_contact);
                 }

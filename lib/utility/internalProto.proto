@@ -18,6 +18,7 @@ message Contact {
     bool inProcess = 4;
     bool blocked = 5;
     bool intoggleblock = 6;
+    bool inlogin = 7;
 }
 
 message Contacts {
@@ -26,4 +27,28 @@ message Contacts {
 
 message Blocks {
     repeated string all = 1;
+}
+
+message UserData {
+    string Name = 1;
+    string Dob = 2;
+    string Gender = 3;
+    string Number = 4;
+    string Email = 5;
+    string Mid = 6;
+    string MainKey = 7;
+    string ProfilePic = 8;
+}
+
+message ConnectionData {
+    string Name = 1;
+    string Number = 2;
+    string Mid = 3;
+    string ProfilePic = 4;
+    bool logout = 5;
+}
+
+message LoginResponse {
+    UserData MyData = 1;
+    repeated ConnectionData ConnData = 2;
 }

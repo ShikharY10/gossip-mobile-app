@@ -147,3 +147,42 @@ const ChangeProfilePayload$json = const {
 
 /// Descriptor for `ChangeProfilePayload`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List changeProfilePayloadDescriptor = $convert.base64Decode('ChRDaGFuZ2VQcm9maWxlUGF5bG9hZBIYCgdQaWNEYXRhGAEgASgJUgdQaWNEYXRhEhwKCVNlbmRlck1JRBgCIAEoCVIJU2VuZGVyTUlEEhwKCVRhcmdldE1JRBgDIAEoCVIJVGFyZ2V0TUlEEhIKBE1sb2MYBCABKAlSBE1sb2M=');
+@$core.Deprecated('Use connectionKeyDescriptor instead')
+const ConnectionKey$json = const {
+  '1': 'ConnectionKey',
+  '2': const [
+    const {'1': 'Number', '3': 1, '4': 1, '5': 9, '10': 'Number'},
+    const {'1': 'Key', '3': 2, '4': 1, '5': 9, '10': 'Key'},
+    const {'1': 'SenderMid', '3': 3, '4': 1, '5': 9, '10': 'SenderMid'},
+    const {'1': 'Mloc', '3': 4, '4': 1, '5': 9, '10': 'Mloc'},
+    const {'1': 'TargetMid', '3': 5, '4': 1, '5': 9, '10': 'TargetMid'},
+  ],
+};
+
+/// Descriptor for `ConnectionKey`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List connectionKeyDescriptor = $convert.base64Decode('Cg1Db25uZWN0aW9uS2V5EhYKBk51bWJlchgBIAEoCVIGTnVtYmVyEhAKA0tleRgCIAEoCVIDS2V5EhwKCVNlbmRlck1pZBgDIAEoCVIJU2VuZGVyTWlkEhIKBE1sb2MYBCABKAlSBE1sb2MSHAoJVGFyZ2V0TWlkGAUgASgJUglUYXJnZXRNaWQ=');
+@$core.Deprecated('Use lKeyShareRequestDescriptor instead')
+const LKeyShareRequest$json = const {
+  '1': 'LKeyShareRequest',
+  '2': const [
+    const {'1': 'SenderMid', '3': 1, '4': 1, '5': 9, '10': 'SenderMid'},
+    const {'1': 'TargetMid', '3': 2, '4': 1, '5': 9, '10': 'TargetMid'},
+    const {'1': 'PublicKey', '3': 3, '4': 1, '5': 9, '10': 'PublicKey'},
+    const {'1': 'Mloc', '3': 4, '4': 1, '5': 9, '10': 'Mloc'},
+  ],
+};
+
+/// Descriptor for `LKeyShareRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List lKeyShareRequestDescriptor = $convert.base64Decode('ChBMS2V5U2hhcmVSZXF1ZXN0EhwKCVNlbmRlck1pZBgBIAEoCVIJU2VuZGVyTWlkEhwKCVRhcmdldE1pZBgCIAEoCVIJVGFyZ2V0TWlkEhwKCVB1YmxpY0tleRgDIAEoCVIJUHVibGljS2V5EhIKBE1sb2MYBCABKAlSBE1sb2M=');
+@$core.Deprecated('Use responseDescriptor instead')
+const Response$json = const {
+  '1': 'Response',
+  '2': const [
+    const {'1': 'Status', '3': 1, '4': 1, '5': 8, '10': 'Status'},
+    const {'1': 'Disc', '3': 2, '4': 1, '5': 9, '10': 'Disc'},
+    const {'1': 'Data', '3': 3, '4': 1, '5': 9, '10': 'Data'},
+  ],
+};
+
+/// Descriptor for `Response`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List responseDescriptor = $convert.base64Decode('CghSZXNwb25zZRIWCgZTdGF0dXMYASABKAhSBlN0YXR1cxISCgREaXNjGAIgASgJUgREaXNjEhIKBERhdGEYAyABKAlSBERhdGE=');

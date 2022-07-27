@@ -932,3 +932,270 @@ class ChangeProfilePayload extends $pb.GeneratedMessage {
   void clearMloc() => clearField(4);
 }
 
+class ConnectionKey extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ConnectionKey', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'main'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Number', protoName: 'Number')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Key', protoName: 'Key')
+    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'SenderMid', protoName: 'SenderMid')
+    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Mloc', protoName: 'Mloc')
+    ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'TargetMid', protoName: 'TargetMid')
+    ..hasRequiredFields = false
+  ;
+
+  ConnectionKey._() : super();
+  factory ConnectionKey({
+    $core.String? number,
+    $core.String? key,
+    $core.String? senderMid,
+    $core.String? mloc,
+    $core.String? targetMid,
+  }) {
+    final _result = create();
+    if (number != null) {
+      _result.number = number;
+    }
+    if (key != null) {
+      _result.key = key;
+    }
+    if (senderMid != null) {
+      _result.senderMid = senderMid;
+    }
+    if (mloc != null) {
+      _result.mloc = mloc;
+    }
+    if (targetMid != null) {
+      _result.targetMid = targetMid;
+    }
+    return _result;
+  }
+  factory ConnectionKey.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ConnectionKey.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ConnectionKey clone() => ConnectionKey()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ConnectionKey copyWith(void Function(ConnectionKey) updates) => super.copyWith((message) => updates(message as ConnectionKey)) as ConnectionKey; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ConnectionKey create() => ConnectionKey._();
+  ConnectionKey createEmptyInstance() => create();
+  static $pb.PbList<ConnectionKey> createRepeated() => $pb.PbList<ConnectionKey>();
+  @$core.pragma('dart2js:noInline')
+  static ConnectionKey getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ConnectionKey>(create);
+  static ConnectionKey? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get number => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set number($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasNumber() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearNumber() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get key => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set key($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasKey() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearKey() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get senderMid => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set senderMid($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasSenderMid() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearSenderMid() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get mloc => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set mloc($core.String v) { $_setString(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasMloc() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearMloc() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.String get targetMid => $_getSZ(4);
+  @$pb.TagNumber(5)
+  set targetMid($core.String v) { $_setString(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasTargetMid() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearTargetMid() => clearField(5);
+}
+
+class LKeyShareRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'LKeyShareRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'main'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'SenderMid', protoName: 'SenderMid')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'TargetMid', protoName: 'TargetMid')
+    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'PublicKey', protoName: 'PublicKey')
+    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Mloc', protoName: 'Mloc')
+    ..hasRequiredFields = false
+  ;
+
+  LKeyShareRequest._() : super();
+  factory LKeyShareRequest({
+    $core.String? senderMid,
+    $core.String? targetMid,
+    $core.String? publicKey,
+    $core.String? mloc,
+  }) {
+    final _result = create();
+    if (senderMid != null) {
+      _result.senderMid = senderMid;
+    }
+    if (targetMid != null) {
+      _result.targetMid = targetMid;
+    }
+    if (publicKey != null) {
+      _result.publicKey = publicKey;
+    }
+    if (mloc != null) {
+      _result.mloc = mloc;
+    }
+    return _result;
+  }
+  factory LKeyShareRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LKeyShareRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  LKeyShareRequest clone() => LKeyShareRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  LKeyShareRequest copyWith(void Function(LKeyShareRequest) updates) => super.copyWith((message) => updates(message as LKeyShareRequest)) as LKeyShareRequest; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static LKeyShareRequest create() => LKeyShareRequest._();
+  LKeyShareRequest createEmptyInstance() => create();
+  static $pb.PbList<LKeyShareRequest> createRepeated() => $pb.PbList<LKeyShareRequest>();
+  @$core.pragma('dart2js:noInline')
+  static LKeyShareRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LKeyShareRequest>(create);
+  static LKeyShareRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get senderMid => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set senderMid($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasSenderMid() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSenderMid() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get targetMid => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set targetMid($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasTargetMid() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearTargetMid() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get publicKey => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set publicKey($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasPublicKey() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearPublicKey() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get mloc => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set mloc($core.String v) { $_setString(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasMloc() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearMloc() => clearField(4);
+}
+
+class Response extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'Response', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'main'), createEmptyInstance: create)
+    ..aOB(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Status', protoName: 'Status')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Disc', protoName: 'Disc')
+    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Data', protoName: 'Data')
+    ..hasRequiredFields = false
+  ;
+
+  Response._() : super();
+  factory Response({
+    $core.bool? status,
+    $core.String? disc,
+    $core.String? data,
+  }) {
+    final _result = create();
+    if (status != null) {
+      _result.status = status;
+    }
+    if (disc != null) {
+      _result.disc = disc;
+    }
+    if (data != null) {
+      _result.data = data;
+    }
+    return _result;
+  }
+  factory Response.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory Response.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  Response clone() => Response()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  Response copyWith(void Function(Response) updates) => super.copyWith((message) => updates(message as Response)) as Response; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static Response create() => Response._();
+  Response createEmptyInstance() => create();
+  static $pb.PbList<Response> createRepeated() => $pb.PbList<Response>();
+  @$core.pragma('dart2js:noInline')
+  static Response getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Response>(create);
+  static Response? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get status => $_getBF(0);
+  @$pb.TagNumber(1)
+  set status($core.bool v) { $_setBool(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasStatus() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearStatus() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get disc => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set disc($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasDisc() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearDisc() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get data => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set data($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasData() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearData() => clearField(3);
+}
+

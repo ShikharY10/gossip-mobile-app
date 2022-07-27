@@ -219,6 +219,7 @@ class Connection {
   String mid;
   String profilepic;
   String key;
+  String done;
 
   Connection(
       {this.name  = "",
@@ -226,7 +227,8 @@ class Connection {
       this.uid = "", 
       this.mid = "", 
       this.key = "",
-      this.profilepic = "", 
+      this.profilepic = "",
+      this.done = "", 
       });
 
   void toObject(String data) {
@@ -237,6 +239,7 @@ class Connection {
     mid = mapData["mid"];
     key = mapData["key"];
     profilepic = mapData["profilepic"];
+    done = mapData["done"];
   }
 
   String toJson() {
@@ -247,6 +250,7 @@ class Connection {
     data["mid"] = mid;
     data["key"] = key;
     data["profilepic"] = profilepic;
+    data["done"] = done;
     String jsonData = json.encode(data);
     return jsonData;
   }

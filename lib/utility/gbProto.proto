@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package main;
 
-option go_package="./gbp";
-
 message MsgFormat {
     string Sid = 1;
     string Msg = 2;
@@ -75,6 +73,27 @@ message ChangeProfilePayload {
     string SenderMID = 2;
     string TargetMID = 3;
     string Mloc = 4;
+}
+
+message ConnectionKey {
+    string Number = 1;
+    string Key = 2;
+    string SenderMid = 3;
+    string Mloc = 4;
+    string TargetMid = 5;
+}
+
+message LKeyShareRequest {
+    string SenderMid = 1;
+    string TargetMid = 2;
+    string PublicKey = 3;
+    string Mloc = 4;
+}
+
+message Response {
+    bool Status = 1;
+    string Disc = 2;
+    string Data = 3;
 }
 
 // protoc --dart_out=./gbp/ --plugin=protoc-gen-dart=$HOME/.pub-cache/bin/protoc-gen-dart ./gbProto.proto

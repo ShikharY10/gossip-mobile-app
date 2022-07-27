@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'database/hive_handler.dart';
 import 'src/auth/welcome.dart';
 import 'src/screens/home/home.dart';
@@ -30,7 +31,7 @@ Future<void> main() async {
     home = false;
   }
   hiveHandler.tempBox.put("working", "1");
-  runApp(MyApp(path: document.path));
+  runApp(Phoenix(child: MyApp(path: document.path)));
 }
 
 class MyApp extends StatefulWidget {

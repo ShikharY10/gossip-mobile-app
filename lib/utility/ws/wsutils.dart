@@ -102,6 +102,7 @@ class WSHandler {
   Future listenForMainEvents() async {
     wsReceivePort.listen((data) async {
       print("new data");
+      print(data.runtimeType);
       if (data is SendPayload) {
         Future<Uint8List> msg = getRawMsg(data.tid, data.msg);
         msg.then((value) {
@@ -121,9 +122,14 @@ class WSHandler {
       else if (data is HandshackPayload) {
         Uint8List hs = await handShack(data.number);
         channel.sink.add(hs);
-        // hs.then((value) {
-          
-        // });
+      }
+      else if (data is gbp.ConnectionKey) {
+        Uint8List dataBytes = (data as gbp.ConnectionKey).writeToBuffer();
+        Uint8List akey = base64.decode(mainKey);
+        Uint8List cipherText = await aesEncrypt(dataBytes, SecretKey(akey));
+        gbp.Transport trans = gbp.Transport(tp: 11, id: mid, msg: cipherText);
+        channel.sink.add(trans.writeToBuffer());
+        print("Response send");
       }
     });
   }
@@ -162,14 +168,20 @@ class WSHandler {
           typeSeven(trans);
         } else if (trans.tp == 8) {
           typeEight(trans);
+        } else if (trans.tp == 9) {
+          typeNine(trans);
+        } else if (trans.tp == 10) {
+          typeTen(trans);
+        } else if (trans.tp == 11) {
+          typeEleven(trans);
+        } else if (trans.tp == 12) {
+          typeTwelve(trans);
         }
       });
       sub.onError((e) {
         sub.cancel();
       });
     }
-
-    
   }
 
   void typeTwo(gbp.Transport trans) async {
@@ -296,6 +308,37 @@ class WSHandler {
     
   }
 
+  void typeNine(gbp.Transport trans) {
+    print("Number Change Notification");
+  }
+
+  void typeTen(gbp.Transport trans) async {
+    List<int> phs1 = await aesDecrypt(Uint8List.fromList(trans.msg),SecretKey(base64.decode(mainKey)));
+    gbp.LKeyShareRequest share = gbp.LKeyShareRequest.fromBuffer(phs1);
+    mainSendPort.send(share);
+    Future<Uint8List> ack = ackMsg(mid, share.mloc);
+    ack.then((value) {
+      channel.sink.add(value);
+    });
+  }
+
+  void typeEleven(gbp.Transport trans) async {
+    print("Key sharing final step");
+    List<int> plaintext = await aesDecrypt(Uint8List.fromList(trans.msg),SecretKey(base64.decode(mainKey)));
+    gbp.ConnectionKey notify = gbp.ConnectionKey.fromBuffer(plaintext);
+    print("notify: ${notify}");
+    mainSendPort.send(notify);
+    Future<Uint8List> ack = ackMsg(mid, notify.mloc);
+    ack.then((value) {
+      channel.sink.add(value);
+    });
+    print("=========Type Eleven Request Received and Processed==========");
+  }
+
+  void typeTwelve(gbp.Transport trans) async {
+
+  }
+
   Future<Uint8List> getInitData() async {
     gbp.ClientName name = gbp.ClientName(uId: uid, mId: mid);
     var dt = name.writeToBuffer();
@@ -378,6 +421,11 @@ class HSRequestPayload {
   String senderMID;
   String b64AesKey;
   HSRequestPayload(this.senderMID, this.b64AesKey);
+}
+
+class LKeyShareResponse {
+  String data;
+  LKeyShareResponse(this.data);
 }
 
 class IsolateHive {

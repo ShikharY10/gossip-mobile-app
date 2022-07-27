@@ -3,6 +3,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
 import 'dart:typed_data';
+import 'package:crypton/crypton.dart';
+
 import '../../../utility/gbp/gbProto.pb.dart' as gbp;
 import 'package:cryptography/cryptography.dart';
 import 'package:flutter/material.dart';
@@ -408,9 +410,56 @@ class _SelectorState extends State<Selector> {
           conn.profilepic = data.picData;
           widget.hiveHandler.connectionsBox.put(data.senderMID, conn.toJson());
         }
+      } else if (data is gbp.ConnectionKey) {
+        String? contactStr = widget.hiveHandler.encryptedTempBox.get("contacts");
+        if (contactStr != null) {
+          internalgbp.Contacts contacts = internalgbp.Contacts.fromBuffer(contactStr.codeUnits);
+          for (int i = 0; i < contacts.all.length; i++) {
+            print("${contacts.all[i].number} | ${data.number}");
+            if (contacts.all[i].number == data.number) {
+              HandShackNotification notify = HandShackNotification(2, true, data.number);
+              contactSController.sink.add(notify);
+              print("=========Number State Changed============");
+              break;
+            }
+          }
+        }
+        print("senderMID: ${data.senderMid}");
+        String? connectionStr = widget.hiveHandler.connectionsBox.get(data.senderMid);
+        print("connectionsTR: ${connectionStr}");
+        if (connectionStr != null) {
+          Connection conn = Connection();
+          conn.toObject(connectionStr);
+          String strPrivatekey = conn.key;
+          RSAPrivateKey privateKey = RSAPrivateKey.fromPEM(strPrivatekey);
+          String aeskey = privateKey.decrypt(data.key);
+          conn.key = aeskey;
+          conn.done = "ok";
+          widget.hiveHandler.connectionsBox.put(data.senderMid, conn.toJson());
+          print("===========Connection Have Been Saved=============");
+        }
+        
+      } else if (data is gbp.LKeyShareRequest) {
+        String? connectionStr = widget.hiveHandler.connectionsBox.get(data.senderMid);
+        if (connectionStr != null) {
+          Connection conn = Connection();
+          conn.toObject(connectionStr);
 
+          RSAPublicKey publicKey = RSAPublicKey.fromPEM((data as gbp.LKeyShareRequest).publicKey);
+          String cipherKey = publicKey.encrypt(conn.key);
 
-
+          gbp.ConnectionKey connKey = gbp.ConnectionKey();
+          connKey.key = cipherKey;
+          connKey.mloc = "";
+          connKey.number = myData.mnum;
+          connKey.senderMid = myData.mid;
+          connKey.targetMid = data.senderMid;
+          // Uint8List connkeyBytes = connKey.writeToBuffer();
+          
+          wsSendPort.send(connKey);
+          HandShackNotification notify = HandShackNotification(2, true, conn.mnum);
+          contactSController.sink.add(notify);
+        }
       }
     });
   }
