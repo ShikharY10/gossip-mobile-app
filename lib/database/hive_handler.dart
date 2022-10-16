@@ -4,20 +4,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-// Box<String> userBox = Hive.box<String>("UserDetails");
-
-// uData Box
-// Init - string ("1" or "0")
-// Name - string
-// DOB  - string
-// Gender - String
-// Number - String
-// Email - String
-// Mid - string
-// Uid - String
-// profile_pic - base64-encoded-String
-// connections - map<mid - string><number - string>
-
 class HiveH {
   late Box<String> userDataBox;
   late Box<String> connectionsBox;
@@ -263,7 +249,8 @@ class Chat {
   String datetime;
   String msg;
   String mloc;
-  Chat({this.sMID = "", this.self = false, this.datetime = "", this.msg = "", this.mloc = ""});
+  int tp;
+  Chat({this.sMID = "", this.self = false, this.datetime = "", this.msg = "", this.mloc = "", this.tp = -1});
 
   @override
   String toString() {
@@ -273,6 +260,7 @@ class Chat {
       "datetime": datetime,
       "msg": msg,
       "mloc": mloc,
+      "tp": tp.toString(),
     };
     return base64.encode(json.encode(mapData).codeUnits);
   }
@@ -285,6 +273,7 @@ class Chat {
     datetime = mapData["datetime"]!;
     msg = mapData["msg"]!;
     mloc = mapData["mloc"]!;
+    tp = int.parse(mapData["tp"]);
   }
 }
 

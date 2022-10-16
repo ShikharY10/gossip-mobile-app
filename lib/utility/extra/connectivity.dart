@@ -1,39 +1,47 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
+class CheckInternetConnection {
+  late StreamController<int> _statusController;
 
-class MyConnectivity {
-  MyConnectivity._();
+  /// Stream for checking the internet connection:
+  /// The stream omit int type event.
+  /// It gives only two integer value: 
+  /// 0 -> No Internet Connection
+  /// 1 -> Internet Connection is awailable
+  late Stream<int> statusStream;
 
-  static final _instance = MyConnectivity._();
-  static MyConnectivity get instance => _instance;
-  final _connectivity = Connectivity();
-  final _controller = StreamController.broadcast();
-  Stream get myStream => _controller.stream;
-
-  void initialise() async {
-    ConnectivityResult result = await _connectivity.checkConnectivity();
-    _checkStatus(result);
-    _connectivity.onConnectivityChanged.listen((result) {
-      _checkStatus(result);
-    });
+  CheckInternetConnection() {
+    _statusController = StreamController<int>();
+    statusStream = _statusController.stream.asBroadcastStream();
+    _checkStatus();
   }
 
-  void _checkStatus(ConnectivityResult result) async {
-    bool isOnline = false;
-    try {
-      final result = await InternetAddress.lookup('example.com');
-      isOnline = result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-    } on SocketException catch (e) {
-      isOnline = false;
-      print(e);
-    } catch (e) {
-      print(e);
-    }
-
-    _controller.sink.add(isOnline);
+  void _checkStatus() async {
+    Timer.periodic(
+      const Duration(seconds: 2),
+      (timer) async {
+        try {
+          List<InternetAddress> result = await InternetAddress
+            .lookup('google.com')
+            .timeout(
+              const Duration(seconds: 2),
+              onTimeout: () {
+                List<InternetAddress> lst = [];
+                return lst;
+              }
+            );
+            if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+              _statusController.sink.add(1);
+            } else {
+              _statusController.sink.add(0);
+            }
+        } on SocketException catch (_) {
+          _statusController.sink.add(0);
+        } catch (e) {
+          _statusController.sink.add(0);
+        }
+      }
+    );
   }
-
-  void disposeStream() => _controller.close();
 }

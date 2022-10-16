@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package main;
+
+message RecentGossips {
+    string Name = 1;
+    string LastMsg = 2;
+    string SenderMID = 3;
+    string DateTime = 4;
+    int32 UnSeenMsgCount = 5;
+    string ProfilePic = 6;
+}
+
+message Contact {
+    string name = 1;
+    string number = 2;
+    bool done = 3;
+    bool inProcess = 4;
+    bool blocked = 5;
+    bool intoggleblock = 6;
+    bool inlogin = 7;
+}
+
+message Contacts {
+    repeated Contact all = 1;
+}
+
+message Blocks {
+    repeated string all = 1;
+}
+
+message UserData {
+    string Name = 1;
+    string Dob = 2;
+    string Gender = 3;
+    string Number = 4;
+    string Email = 5;
+    string Mid = 6;
+    string MainKey = 7;
+    string ProfilePic = 8;
+}
+
+message ConnectionData {
+    string Name = 1;
+    string Number = 2;
+    string Mid = 3;
+    string ProfilePic = 4;
+    bool logout = 5;
+}
+
+message LoginResponse {
+    UserData MyData = 1;
+    repeated ConnectionData ConnData = 2;
+}

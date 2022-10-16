@@ -6,14 +6,12 @@ message MsgFormat {
     string Sid = 1;
     string Msg = 2;
     string Mloc = 3;
-    int32 Tp = 4;
 }
 
 message ChatPayload {
     string Tid = 1;
     string Sid = 2;
     string Msg = 3;
-    int32 Tp = 4;
 }
 
 message Transport {

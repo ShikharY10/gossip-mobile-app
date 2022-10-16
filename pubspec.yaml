@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -30,7 +30,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
@@ -42,21 +41,30 @@ dependencies:
   cryptography: ^2.0.5
   crypton: ^2.0.3
   flutter_file_dialog: ^2.3.0
-  permission_handler: ^9.2.0
-  plugin_platform_interface: ^2.1.2
+  permission_handler:
+  plugin_platform_interface:
   flutter_background_service: ^2.1.0
   web_socket_channel: ^2.2.0
   protobuf: ^2.0.1
   flutter_secure_storage: ^4.2.1
   connectivity_plus: ^2.3.0
   flutter_contacts: ^1.1.4
-  device_info_plus: ^3.2.3
+  device_info_plus:
   grouped_list: ^4.2.0
   intl: ^0.17.0
   flutter_native_image:
   provider: ^6.0.3
   image_cropper: ^2.0.3
   flutter_phoenix: ^1.0.0
+  camera:
+  video_player:
+  flutter_sound:
+  uuid: ^3.0.6
+  flutter_ringtone_player: ^3.2.0
+  flutter_media_metadata: ^1.0.0+1
+  exif: ^3.1.2
+  dio: ^4.0.6
+  file_picker:
 
 dev_dependencies:
   flutter_test:
@@ -86,7 +94,6 @@ flutter_launcher_name:
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -109,14 +116,14 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-      - family: DancingScript
-        fonts:
-          - asset: fonts/DancingScript.ttf
-          - asset: fonts/DancingScript.ttf
-            style: italic
-      - family: CustomHandShakeIcons
-        fonts:
-          - asset: fonts/CustomHandShakeIcons.ttf
+    - family: DancingScript
+      fonts:
+        - asset: fonts/DancingScript.ttf
+        - asset: fonts/DancingScript.ttf
+          style: italic
+    - family: CustomHandShakeIcons
+      fonts:
+        - asset: fonts/CustomHandShakeIcons.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

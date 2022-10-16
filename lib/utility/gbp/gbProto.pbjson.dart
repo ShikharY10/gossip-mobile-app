@@ -15,11 +15,12 @@ const MsgFormat$json = const {
     const {'1': 'Sid', '3': 1, '4': 1, '5': 9, '10': 'Sid'},
     const {'1': 'Msg', '3': 2, '4': 1, '5': 9, '10': 'Msg'},
     const {'1': 'Mloc', '3': 3, '4': 1, '5': 9, '10': 'Mloc'},
+    const {'1': 'Tp', '3': 4, '4': 1, '5': 5, '10': 'Tp'},
   ],
 };
 
 /// Descriptor for `MsgFormat`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List msgFormatDescriptor = $convert.base64Decode('CglNc2dGb3JtYXQSEAoDU2lkGAEgASgJUgNTaWQSEAoDTXNnGAIgASgJUgNNc2cSEgoETWxvYxgDIAEoCVIETWxvYw==');
+final $typed_data.Uint8List msgFormatDescriptor = $convert.base64Decode('CglNc2dGb3JtYXQSEAoDU2lkGAEgASgJUgNTaWQSEAoDTXNnGAIgASgJUgNNc2cSEgoETWxvYxgDIAEoCVIETWxvYxIOCgJUcBgEIAEoBVICVHA=');
 @$core.Deprecated('Use chatPayloadDescriptor instead')
 const ChatPayload$json = const {
   '1': 'ChatPayload',
@@ -27,11 +28,12 @@ const ChatPayload$json = const {
     const {'1': 'Tid', '3': 1, '4': 1, '5': 9, '10': 'Tid'},
     const {'1': 'Sid', '3': 2, '4': 1, '5': 9, '10': 'Sid'},
     const {'1': 'Msg', '3': 3, '4': 1, '5': 9, '10': 'Msg'},
+    const {'1': 'Tp', '3': 4, '4': 1, '5': 5, '10': 'Tp'},
   ],
 };
 
 /// Descriptor for `ChatPayload`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List chatPayloadDescriptor = $convert.base64Decode('CgtDaGF0UGF5bG9hZBIQCgNUaWQYASABKAlSA1RpZBIQCgNTaWQYAiABKAlSA1NpZBIQCgNNc2cYAyABKAlSA01zZw==');
+final $typed_data.Uint8List chatPayloadDescriptor = $convert.base64Decode('CgtDaGF0UGF5bG9hZBIQCgNUaWQYASABKAlSA1RpZBIQCgNTaWQYAiABKAlSA1NpZBIQCgNNc2cYAyABKAlSA01zZxIOCgJUcBgEIAEoBVICVHA=');
 @$core.Deprecated('Use transportDescriptor instead')
 const Transport$json = const {
   '1': 'Transport',

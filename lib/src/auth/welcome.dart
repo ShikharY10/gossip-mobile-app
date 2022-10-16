@@ -17,13 +17,10 @@ List<String> numberList = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
 
 // main page of gossip it is the welcome page of gossip.   
 class WelcomePage extends StatefulWidget {
-  final StreamController<bool> allChatEvent;
-  final StreamController<bool> welcomeStatus;
-  final StreamController<bool> askOtpEvent;
-  final StreamController<bool> signUpEvent;
+  final Stream<int> internetStatus;
   final String path;
-  HiveH hiveHandler;
-  WelcomePage({Key? key, required this.allChatEvent, required this.welcomeStatus, required this.askOtpEvent, required this.signUpEvent, required this.hiveHandler, required this.path}) : super(key: key);
+  final HiveH hiveHandler;
+  const WelcomePage({Key? key, required this.internetStatus, required this.hiveHandler, required this.path}) : super(key: key);
 
   @override
   State<WelcomePage> createState() => _WelcomePageState();
@@ -45,7 +42,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
 
   void checkInternetStatus() {
-    widget.welcomeStatus.stream.listen((event) {
+    widget.internetStatus.listen((event) {
       print("Internet Connection: $event");
     });
   }
@@ -151,7 +148,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
+                padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
                 child: TextFormField(
                   controller: numberController,
                   style: TextStyle(color: Color.fromARGB(255, 28, 29, 77)),
@@ -335,7 +332,7 @@ class _WelcomePageState extends State<WelcomePage> {
                             context,
                             MaterialPageRoute(
                               builder: (BuildContext context) => HomePage(
-                                allConnectionStatus: widget.allChatEvent,
+                                internetStatus: widget.internetStatus,
                                 hiveHandler: widget.hiveHandler, 
                                 path: widget.path
                               )
@@ -371,9 +368,7 @@ class _WelcomePageState extends State<WelcomePage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => AskOTP(
-                                  askOtpEvent: widget.askOtpEvent,
-                                  allChatEvent: widget.allChatEvent,
-                                  signUpEvent:widget.signUpEvent,
+                                  internetStatus: widget.internetStatus,
                                   hiveHandler: widget.hiveHandler,
                                   path: widget.path,
                                 )));

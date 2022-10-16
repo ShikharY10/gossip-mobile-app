@@ -11,6 +11,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import '../../database/hive_handler.dart';
+import '../../protobuf/videocall/videocall.pb.dart';
 import '../gbp/gbProto.pb.dart' as gbp;
 import 'package:cryptography/cryptography.dart';
 
@@ -53,13 +54,13 @@ RSAPublicKey loadpemtopub(String key) {
   return pubKey;
 }
 
-
 // ======================================================================
 
 void isolateRunner(IsolateModel model) {
   ReceivePort wsReceivePort = ReceivePort();
   model.mainSendPort.send(wsReceivePort.sendPort);
-  WSHandler handler = WSHandler(model.address, model.mid, model.uid, model.mainKey, model.path, wsReceivePort, model.mainSendPort);
+  WSHandler handler = WSHandler(model.address, model.mid, model.uid,
+      model.mainKey, model.path, wsReceivePort, model.mainSendPort);
   handler.connectAndListen();
 }
 
@@ -76,11 +77,11 @@ class IsolateModel {
   final String uid;
   final String mainKey;
   final String path;
-  IsolateModel(this.address, this.mainSendPort, this.mid, this.uid, this.mainKey, this.path);
+  IsolateModel(this.address, this.mainSendPort, this.mid, this.uid,
+      this.mainKey, this.path);
 }
 
 class WSHandler {
-
   String address;
   String mid;
   String uid;
@@ -93,37 +94,32 @@ class WSHandler {
   late User myData;
 
   IsolateHive isoHive = IsolateHive();
-  
-  WSHandler(this.address, this.mid, this.uid, this.mainKey, this.path, this.wsReceivePort, this.mainSendPort) {
+
+  WSHandler(this.address, this.mid, this.uid, this.mainKey, this.path,
+      this.wsReceivePort, this.mainSendPort) {
     isoHive.init(path);
     listenForMainEvents();
   }
 
   Future listenForMainEvents() async {
     wsReceivePort.listen((data) async {
-      print("new data");
-      print(data.runtimeType);
       if (data is SendPayload) {
-        Future<Uint8List> msg = getRawMsg(data.tid, data.msg);
+        Future<Uint8List> msg = getRawMsg(data.tid, data.msg, data.tp);
         msg.then((value) {
           channel.sink.add(value);
           print("message send");
         });
-      }
-      else if (data is User) {
+      } else if (data is User) {
         myData = data;
-      }
-      else if (data is AckPayload) {
+      } else if (data is AckPayload) {
         Future<Uint8List> ack = ackMsg(mid, data.mloc);
         ack.then((value) {
           channel.sink.add(value);
         });
-      }
-      else if (data is HandshackPayload) {
+      } else if (data is HandshackPayload) {
         Uint8List hs = await handShack(data.number);
         channel.sink.add(hs);
-      }
-      else if (data is gbp.ConnectionKey) {
+      } else if (data is gbp.ConnectionKey) {
         Uint8List dataBytes = (data as gbp.ConnectionKey).writeToBuffer();
         Uint8List akey = base64.decode(mainKey);
         Uint8List cipherText = await aesEncrypt(dataBytes, SecretKey(akey));
@@ -136,10 +132,10 @@ class WSHandler {
 
   void connectAndListen() async {
     bool connected = false;
-    
+
     try {
       channel = IOWebSocketChannel.connect(
-        Uri.parse('ws://'+ address +':8000/'),
+        Uri.parse('ws://' + address + ':8000/'),
       );
       connected = true;
     } on SocketException {
@@ -156,27 +152,61 @@ class WSHandler {
 
       var sub = channel.stream.listen((data) async {
         gbp.Transport trans = gbp.Transport.fromBuffer(data);
-        if (trans.tp == 2) {
-          typeTwo(trans);
-        } else if (trans.tp == 4) {
-          typeFour(trans);
-        } else if (trans.tp == 5) {
-          typeFive(trans);
-        } else if (trans.tp == 6) {
-          typeSix(trans);
-        } else if (trans.tp == 7) {
-          typeSeven(trans);
-        } else if (trans.tp == 8) {
-          typeEight(trans);
-        } else if (trans.tp == 9) {
-          typeNine(trans);
-        } else if (trans.tp == 10) {
-          typeTen(trans);
-        } else if (trans.tp == 11) {
-          typeEleven(trans);
-        } else if (trans.tp == 12) {
-          typeTwelve(trans);
+        switch (trans.tp) {
+          case 2:
+            typeTwo(trans);
+            break;
+          case 4:
+            typeFour(trans);
+            break;
+          case 5:
+            typeFive(trans);
+            break;
+          case 6:
+            typeSix(trans);
+            break;
+          case 7:
+            typeSeven(trans);
+            break;
+          case 8:
+            typeEight(trans);
+            break;
+          case 9:
+            typeNine(trans);
+            break;
+          case 10:
+            typeTen(trans);
+            break;
+          case 11:
+            typeEleven(trans);
+            break;
+          case 12:
+            typeTwelve(trans);
+            break;
+          default:
+            break;
         }
+        // if (trans.tp == 2) {
+        //   typeTwo(trans);
+        // } else if (trans.tp == 4) {
+        //   typeFour(trans);
+        // } else if (trans.tp == 5) {
+        //   typeFive(trans);
+        // } else if (trans.tp == 6) {
+        //   typeSix(trans);
+        // } else if (trans.tp == 7) {
+        //   typeSeven(trans);
+        // } else if (trans.tp == 8) {
+        //   typeEight(trans);
+        // } else if (trans.tp == 9) {
+        //   typeNine(trans);
+        // } else if (trans.tp == 10) {
+        //   typeTen(trans);
+        // } else if (trans.tp == 11) {
+        //   typeEleven(trans);
+        // } else if (trans.tp == 12) {
+        //   typeTwelve(trans);
+        // }
       });
       sub.onError((e) {
         sub.cancel();
@@ -185,22 +215,25 @@ class WSHandler {
   }
 
   void typeTwo(gbp.Transport trans) async {
-    List<int> MSG = await aesDecrypt(Uint8List.fromList(trans.msg),
-        SecretKey(base64.decode(mainKey)));
-    gbp.MsgFormat chat = gbp.MsgFormat.fromBuffer(MSG);
-    Chat c = Chat(
-      sMID : chat.sid,
-      self: false,
-      datetime: DateTime.now().toIso8601String(),
-      msg: chat.msg,
-      mloc: chat.mloc
+    List<int> msg = await aesDecrypt(
+      Uint8List.fromList(trans.msg),
+      SecretKey(base64.decode(mainKey))
     );
+    gbp.MsgFormat chat = gbp.MsgFormat.fromBuffer(msg);
+    Chat c = Chat(
+        sMID: chat.sid,
+        self: false,
+        datetime: DateTime.now().toIso8601String(),
+        msg: chat.msg,
+        mloc: chat.mloc,
+        tp: chat.tp
+      );
     mainSendPort.send(c);
   }
 
   void typeFour(gbp.Transport trans) async {
-    List<int> phs1 = await aesDecrypt(Uint8List.fromList(trans.msg),
-        SecretKey(base64.decode(mainKey)));
+    List<int> phs1 = await aesDecrypt(
+        Uint8List.fromList(trans.msg), SecretKey(base64.decode(mainKey)));
     gbp.HandShackP1 HS1 = gbp.HandShackP1.fromBuffer(phs1);
 
     List<int> akey = Hive.generateSecureKey();
@@ -216,16 +249,10 @@ class WSHandler {
       permit: 1,
     );
     List<int> MSG = await aesEncrypt(
-      HS2.writeToBuffer(),
-      SecretKey(base64.decode(mainKey))
-    );
+        HS2.writeToBuffer(), SecretKey(base64.decode(mainKey)));
 
-    gbp.Transport trans2 = gbp.Transport(
-      tp: 5,
-      id: mid,
-      msg: MSG
-    );
-  
+    gbp.Transport trans2 = gbp.Transport(tp: 5, id: mid, msg: MSG);
+
     channel.sink.add(trans2.writeToBuffer());
 
     isoHive.isolateBD.put(HS1.hsid, base64.encode(akey));
@@ -237,12 +264,10 @@ class WSHandler {
     });
     print("HS-T4-RECVED");
   }
-  
+
   void typeFive(gbp.Transport trans) async {
     List<int> phs1 = await aesDecrypt(
-      Uint8List.fromList(trans.msg),
-      SecretKey(base64.decode(mainKey))
-    );
+        Uint8List.fromList(trans.msg), SecretKey(base64.decode(mainKey)));
     gbp.HandShackP2 HS2 = gbp.HandShackP2.fromBuffer(phs1);
     if (HS2.permit == 1) {
       String? pemPriKey = isoHive.isolateBD.get(HS2.hsid);
@@ -259,10 +284,11 @@ class WSHandler {
   }
 
   void typeSix(gbp.Transport trans) async {
-    List<int> phs1 = await aesDecrypt(Uint8List.fromList(trans.msg),SecretKey(base64.decode(mainKey)));
+    List<int> phs1 = await aesDecrypt(
+        Uint8List.fromList(trans.msg), SecretKey(base64.decode(mainKey)));
     gbp.ConnDataTransfer connData = gbp.ConnDataTransfer.fromBuffer(phs1);
     String? aesKey = isoHive.isolateBD.get(connData.hsid);
-    if (aesKey == null ) {
+    if (aesKey == null) {
       return;
     }
 
@@ -285,8 +311,10 @@ class WSHandler {
   }
 
   void typeSeven(gbp.Transport trans) async {
-    List<int> phs1 = await aesDecrypt(Uint8List.fromList(trans.msg),SecretKey(base64.decode(mainKey)));
-    gbp.HandshakeDeleteNotify notify = gbp.HandshakeDeleteNotify.fromBuffer(phs1);
+    List<int> phs1 = await aesDecrypt(
+        Uint8List.fromList(trans.msg), SecretKey(base64.decode(mainKey)));
+    gbp.HandshakeDeleteNotify notify =
+        gbp.HandshakeDeleteNotify.fromBuffer(phs1);
 
     Future<Uint8List> ack = ackMsg(mid, notify.mloc);
     print("mid: $mid, | mloc: ${notify.mloc}");
@@ -298,14 +326,14 @@ class WSHandler {
 
   void typeEight(gbp.Transport trans) async {
     print("image change notification");
-    List<int> phs1 = await aesDecrypt(Uint8List.fromList(trans.msg),SecretKey(base64.decode(mainKey)));
+    List<int> phs1 = await aesDecrypt(
+        Uint8List.fromList(trans.msg), SecretKey(base64.decode(mainKey)));
     gbp.ChangeProfilePayload notify = gbp.ChangeProfilePayload.fromBuffer(phs1);
     mainSendPort.send(notify);
     Future<Uint8List> ack = ackMsg(mid, notify.mloc);
     ack.then((value) {
       channel.sink.add(value);
     });
-    
   }
 
   void typeNine(gbp.Transport trans) {
@@ -313,7 +341,8 @@ class WSHandler {
   }
 
   void typeTen(gbp.Transport trans) async {
-    List<int> phs1 = await aesDecrypt(Uint8List.fromList(trans.msg),SecretKey(base64.decode(mainKey)));
+    List<int> phs1 = await aesDecrypt(
+        Uint8List.fromList(trans.msg), SecretKey(base64.decode(mainKey)));
     gbp.LKeyShareRequest share = gbp.LKeyShareRequest.fromBuffer(phs1);
     mainSendPort.send(share);
     Future<Uint8List> ack = ackMsg(mid, share.mloc);
@@ -324,7 +353,8 @@ class WSHandler {
 
   void typeEleven(gbp.Transport trans) async {
     print("Key sharing final step");
-    List<int> plaintext = await aesDecrypt(Uint8List.fromList(trans.msg),SecretKey(base64.decode(mainKey)));
+    List<int> plaintext = await aesDecrypt(
+        Uint8List.fromList(trans.msg), SecretKey(base64.decode(mainKey)));
     gbp.ConnectionKey notify = gbp.ConnectionKey.fromBuffer(plaintext);
     print("notify: ${notify}");
     mainSendPort.send(notify);
@@ -336,7 +366,11 @@ class WSHandler {
   }
 
   void typeTwelve(gbp.Transport trans) async {
-
+    print("New call request in isolate layer");
+    List<int> plaintext = await aesDecrypt(
+        Uint8List.fromList(trans.msg), SecretKey(base64.decode(mainKey)));
+    CallNotifier notifier = CallNotifier.fromBuffer(plaintext);
+    mainSendPort.send(notifier);
   }
 
   Future<Uint8List> getInitData() async {
@@ -348,8 +382,8 @@ class WSHandler {
     return trans.writeToBuffer();
   }
 
-  Future<Uint8List> getRawMsg(String tid, String msg) async {
-    gbp.ChatPayload chat = gbp.ChatPayload(tid: tid, sid: mid, msg: msg);
+  Future<Uint8List> getRawMsg(String tid, String msg, int tp) async {
+    gbp.ChatPayload chat = gbp.ChatPayload(tid: tid, sid: mid, msg: msg, tp: tp);
     Uint8List akey = base64.decode(mainKey);
     Uint8List cipherText =
         await aesEncrypt(chat.writeToBuffer(), SecretKey(akey));
@@ -364,7 +398,7 @@ class WSHandler {
         await aesEncrypt(ackC.writeToBuffer(), SecretKey(akey));
     gbp.Transport trans = gbp.Transport(tp: 3, id: mid, msg: cipherText);
     return trans.writeToBuffer();
-  } 
+  }
 
   Future<Uint8List> handShack(String number) async {
     print("Starting handshaking process...");
@@ -372,8 +406,8 @@ class WSHandler {
     RSAKeypair RSAKP = RSAKeypair.fromRandom(keySize: 2048);
     String pubkey = RSAKP.publicKey.toFormattedPEM();
     gbp.HandShackP1 HS1 = gbp.HandShackP1(
-      targetMobile: number, 
-      senderMID: mid, 
+      targetMobile: number,
+      senderMID: mid,
       publicKey: pubkey,
       hsid: base64.encode(hsid),
     );
@@ -391,7 +425,8 @@ class WSHandler {
 class SendPayload {
   String tid;
   String msg;
-  SendPayload(this.tid, this.msg);
+  int tp;
+  SendPayload(this.tid, this.msg, this.tp);
 }
 
 class AckPayload {
@@ -435,4 +470,3 @@ class IsolateHive {
     isolateBD = await Hive.openBox<String>("isolatedb");
   }
 }
-

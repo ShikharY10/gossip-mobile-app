@@ -8,15 +8,18 @@ import '../../database/hive_handler.dart';
 import '../../utility/widget/button.dart';
 import 'signup.dart';
 
-// String address = "192.168.43.58";  // 192.168.43.58 
+// String address = "192.168.43.58";  // 192.168.43.58
 
 class AskOTP extends StatefulWidget {
-  final StreamController<bool> allChatEvent;
-  final StreamController<bool> askOtpEvent;
-  final StreamController<bool> signUpEvent;
+  final Stream<int> internetStatus;
   final String path;
-  HiveH hiveHandler;
-  AskOTP({Key? key, required this.askOtpEvent, required this.allChatEvent, required this.signUpEvent, required this.hiveHandler, required this.path}) : super(key: key);
+  final HiveH hiveHandler;
+  const AskOTP(
+      {Key? key,
+      required this.internetStatus,
+      required this.hiveHandler,
+      required this.path})
+      : super(key: key);
 
   @override
   State<AskOTP> createState() => _AskOTPState();
@@ -42,7 +45,6 @@ class _AskOTPState extends State<AskOTP> {
     super.initState();
     address = widget.hiveHandler.tempBox.get("ipaddress");
   }
-
 
   Widget secondStep() {
     return Column(
@@ -98,7 +100,7 @@ class _AskOTPState extends State<AskOTP> {
                   var body = json.encode(payload);
 
                   var response = http.post(
-                      Uri.parse("http://$address:8080/verifyotp"),
+                      Uri.parse("http://$address:8080/api/v1/verifyotp"),
                       body: body);
                   response.then((value) {
                     if (value.statusCode == 200) {
@@ -112,8 +114,10 @@ class _AskOTPState extends State<AskOTP> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      SignUp(signUpEvent: widget.signUpEvent, allChatEvent: widget.allChatEvent,hiveHandler: widget.hiveHandler, path: widget.path)));
+                                  builder: (BuildContext context) => SignUp(
+                                      internetStatus: widget.internetStatus,
+                                      hiveHandler: widget.hiveHandler,
+                                      path: widget.path)));
                         });
                       }
                     }
@@ -128,10 +132,9 @@ class _AskOTPState extends State<AskOTP> {
   @override
   Widget build(BuildContext context) {
     return Material(
-        color: Color.fromARGB(255, 28, 29, 77),
+        color: const Color.fromARGB(255, 28, 29, 77),
         child: Padding(
-            padding: const EdgeInsets.only(
-                top: 100, bottom: 40, right: 20, left: 20),
+            padding: const EdgeInsets.only(top: 100, bottom: 40, right: 20, left: 20),
             child: Column(
               children: [
                 const Padding(
@@ -142,12 +145,15 @@ class _AskOTPState extends State<AskOTP> {
                         fontSize: 40,
                         letterSpacing: 0,
                         fontWeight: FontWeight.w900,
-                      )),
+                      )
+                    ),
                 ),
                 const Text("Validate your mobile number",
-                    style: TextStyle(color: Color.fromARGB(255, 135, 212, 182))),
+                    style:
+                        TextStyle(color: Color.fromARGB(255, 135, 212, 182))),
                 const Text("using OTP method.",
-                    style: TextStyle(color: Color.fromARGB(255, 135, 212, 182))),
+                    style:
+                        TextStyle(color: Color.fromARGB(255, 135, 212, 182))),
                 Padding(
                   padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
                   child: TextFormField(
@@ -191,19 +197,22 @@ class _AskOTPState extends State<AskOTP> {
                                 setState(() {
                                   inNumberProcess = true;
                                 });
-                                widget.hiveHandler.tempBox.put("number", numberController.text);
+                                widget.hiveHandler.tempBox
+                                    .put("number", numberController.text);
                                 // hiveHandler.set("tempData", "number",
                                 //     numberController.text);
                                 Map payload = {'number': numberController.text};
                                 var body = json.encode(payload);
                                 var response = http.post(
-                                    Uri.parse("http://$address:8080/sendotp"),
+                                    Uri.parse(
+                                        "http://$address:8080/api/v1/sendotp"),
                                     body: body);
                                 response.then((value) {
                                   if (value.statusCode == 200) {
                                     String res =
                                         String.fromCharCodes(value.bodyBytes);
-                                    widget.hiveHandler.tempBox.put("id", json.decode(res)['id']);
+                                    widget.hiveHandler.tempBox
+                                        .put("id", json.decode(res)['id']);
                                     setState(() {
                                       sentOTP = true;
                                     });

@@ -14,6 +14,7 @@ class MsgFormat extends $pb.GeneratedMessage {
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Sid', protoName: 'Sid')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Msg', protoName: 'Msg')
     ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Mloc', protoName: 'Mloc')
+    ..a<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Tp', $pb.PbFieldType.O3, protoName: 'Tp')
     ..hasRequiredFields = false
   ;
 
@@ -22,6 +23,7 @@ class MsgFormat extends $pb.GeneratedMessage {
     $core.String? sid,
     $core.String? msg,
     $core.String? mloc,
+    $core.int? tp,
   }) {
     final _result = create();
     if (sid != null) {
@@ -32,6 +34,9 @@ class MsgFormat extends $pb.GeneratedMessage {
     }
     if (mloc != null) {
       _result.mloc = mloc;
+    }
+    if (tp != null) {
+      _result.tp = tp;
     }
     return _result;
   }
@@ -82,6 +87,15 @@ class MsgFormat extends $pb.GeneratedMessage {
   $core.bool hasMloc() => $_has(2);
   @$pb.TagNumber(3)
   void clearMloc() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.int get tp => $_getIZ(3);
+  @$pb.TagNumber(4)
+  set tp($core.int v) { $_setSignedInt32(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasTp() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearTp() => clearField(4);
 }
 
 class ChatPayload extends $pb.GeneratedMessage {
@@ -89,6 +103,7 @@ class ChatPayload extends $pb.GeneratedMessage {
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Tid', protoName: 'Tid')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Sid', protoName: 'Sid')
     ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Msg', protoName: 'Msg')
+    ..a<$core.int>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'Tp', $pb.PbFieldType.O3, protoName: 'Tp')
     ..hasRequiredFields = false
   ;
 
@@ -97,6 +112,7 @@ class ChatPayload extends $pb.GeneratedMessage {
     $core.String? tid,
     $core.String? sid,
     $core.String? msg,
+    $core.int? tp,
   }) {
     final _result = create();
     if (tid != null) {
@@ -107,6 +123,9 @@ class ChatPayload extends $pb.GeneratedMessage {
     }
     if (msg != null) {
       _result.msg = msg;
+    }
+    if (tp != null) {
+      _result.tp = tp;
     }
     return _result;
   }
@@ -157,6 +176,15 @@ class ChatPayload extends $pb.GeneratedMessage {
   $core.bool hasMsg() => $_has(2);
   @$pb.TagNumber(3)
   void clearMsg() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.int get tp => $_getIZ(3);
+  @$pb.TagNumber(4)
+  set tp($core.int v) { $_setSignedInt32(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasTp() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearTp() => clearField(4);
 }
 
 class Transport extends $pb.GeneratedMessage {
