@@ -4,81 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:get_it/get_it.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'database/hive_handler.dart';
-import 'src/auth/welcome.dart';
-import 'src/screens/home/home.dart';
-import 'utility/extra/connectivity.dart';
+import 'database/config.dart';
+import 'src/auth/signupotp.dart';
+import 'src/screens/home/navigation.dart';
 import 'utility/extra/themes.dart';
 import 'package:path_provider/path_provider.dart';
+import 'utility/network/internet.dart';
 
-void getPermissionAndCreateDir() async {
-  bool res = await FlutterContacts.requestPermission();
-  PermissionStatus status2 = await Permission.storage.request();
-  PermissionStatus status1 =  await Permission.manageExternalStorage.request();
-  print("Permissions: $res | ${status1.isGranted} | ${status2.isGranted}");
-  if (!res || !status2.isGranted) {
-    SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop');
-  }
-  creatFileStructure();
-}
+bool isUserRegistered = false;
 
-HiveH hiveHandler = HiveH();
-bool home = false;
-
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  Directory document = await getApplicationDocumentsDirectory();
-  bool res = await hiveHandler.flutterInit(document.path);
-  if (res) {
-    home = true;
-  } else {
-    home = false;
-  }
-  runApp(Phoenix(child: MyApp(path: document.path)));
-}
-
-class MyApp extends StatefulWidget {
-  final String path;
-  const MyApp({Key? key, this.path=""}) : super(key: key);
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  late CheckInternetConnection internet;
-
-  @override
-  void initState() {
-    super.initState();
-    if (!home) {
-      getPermissionAndCreateDir();
-    }
-    internet = CheckInternetConnection();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      themeMode: ThemeMode.system,
-      debugShowCheckedModeBanner: false,
-      theme: lightThemeData(context),
-      darkTheme: darkThemeData(context),
-      routes: {"/": (context) => home ? HomePage(
-          internetStatus: internet.statusStream,
-          hiveHandler: hiveHandler,
-          path: widget.path
-        ) : WelcomePage(
-              internetStatus: internet.statusStream,
-              hiveHandler: hiveHandler,
-              path: widget.path
-          )},
-    );
-  }
-}
-
-void creatFileStructure() async {
+void creatFileStructure(DataBase db) async {
   Directory? directory = await getExternalStorageDirectory();
   if (directory != null) {
     String basePath = "";
@@ -106,7 +43,61 @@ void creatFileStructure() async {
       if (!await chatVideoDir.exists()) {
         await chatVideoDir.create();
       }
-      hiveHandler.tempBox.put("basepath", basePath);
+      db.set("tempBox","basepath", basePath);
     }
   }
+}
+
+void getPermissionAndCreateDir(DataBase db) async {
+  bool res = await FlutterContacts.requestPermission();
+  PermissionStatus status2 = await Permission.storage.request();
+  PermissionStatus status1 =  await Permission.manageExternalStorage.request();
+  if (!res || !status2.isGranted) {
+    SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop');
+  }
+  creatFileStructure(db);
+}
+
+class MyApp extends StatefulWidget {
+  final DataBase db;
+  const MyApp(this.db, {Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Connectivity connectivity = Connectivity();
+
+  @override
+  void initState() {
+    super.initState();
+    GetIt.I.registerSingleton<Connectivity>(connectivity, instanceName: "connectivity");
+    if (!isUserRegistered) {
+      getPermissionAndCreateDir(widget.db);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      themeMode: ThemeMode.system,
+      debugShowCheckedModeBanner: false,
+      theme: lightThemeData(context),
+      darkTheme: darkThemeData(context),
+      routes: {"/": (context) => isUserRegistered ? const Navigation() : const WelcomePage()},
+    );
+  }
+}
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  Directory directory = await getApplicationDocumentsDirectory();
+  GetIt.I.registerSingleton<Directory>(directory, instanceName: "directory");
+  
+  DataBase db = DataBase();
+  isUserRegistered = await db.flutterInit(directory.path);
+
+  GetIt.I.registerSingleton<DataBase>(db, instanceName: "db");
+  runApp(Phoenix(child: MyApp(db)));
 }

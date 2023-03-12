@@ -65,6 +65,10 @@ dependencies:
   exif: ^3.1.2
   dio: ^4.0.6
   file_picker:
+  device_info_plus_web: ^5.0.0
+  yaml: ^3.1.1
+  get_it: ^7.2.0
+  eva_icons_flutter: ^3.1.0
 
 dev_dependencies:
   flutter_test:
@@ -77,6 +81,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
   flutter_launcher_icons:
+  safe_device: ^1.1.2
 
 # Setting up app icon
 flutter_icons:

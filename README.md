@@ -1,16 +1,28 @@
-# gossip_frontend
+<div align="center">
+  <img src="assets/images/logo.png" alt="Magator Logo" width="320" height="300">
+  <h1>GossiP</h1>
+  <strong>A Open Source Social Media Project</strong>
+  <h6>Support E2E Encrypted messaging and image posting.</h6>
+</div>
+<br>
 
-A new Flutter project.
+<hr>
 
-## Getting Started
+<div align="center">
+  <h1>GossiP Mobile App</h1>
+</div>
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<p align="center">
+  <tr>
+    <th>
+      <a href="#">
+        <img src="https://img.shields.io/badge/-Android-blue?style=plastic&logo=android" alt="Chrome Web Store users">
+      </a>
+    </th>
+    <th>
+      <a href="#">
+        <img src="https://img.shields.io/badge/-beta-purple?style=plastic&" alt="version: v1.0.0-beta">
+      </a>
+    </th>
+  </tr>
+</p>

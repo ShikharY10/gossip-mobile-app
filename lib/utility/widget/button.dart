@@ -8,13 +8,14 @@ Widget defaultButton(
     bool disable = false,
     bool rightArrow = false,
     bool leftArrow = false,
+    Color buttonColor = const Color.fromARGB(255, 135, 212, 182),
     }) {
   return InkWell(
       onTap: () {
         if (disable) {
           return;
         }
-        return validator(context);
+        validator(context);
       },
       child: AnimatedContainer(
         duration: const Duration(seconds: 1),
@@ -30,7 +31,7 @@ Widget defaultButton(
                     color: Color.fromARGB(255, 28, 29, 77),
                     size: 15,
                   )
-                : Container(width: 0, height: 0),
+                : const SizedBox(),
             progressBar
                 ? const CircularProgressIndicator(color: Colors.white)
                 : Text(label,
@@ -45,11 +46,11 @@ Widget defaultButton(
                     color: Color.fromARGB(255, 28, 29, 77),
                     size: 15,
                   )
-                : Container(width: 0, height: 0)
+                : const SizedBox()
           ],
         ),
         decoration: BoxDecoration(
-            color: Color.fromARGB(255, 135, 212, 182),
+            color: buttonColor,
             borderRadius: BorderRadius.circular(50)),
       ));
 }

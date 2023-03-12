@@ -13,7 +13,13 @@
             "name": "Pixel 5",
             "request": "launch",
             "type": "dart",
-            "deviceId": "emulator-5556",
+            "deviceId": "emulator-5554",
+        },
+        {
+            "name": "Pixel 6",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "emulator-5556"
         },
         {
             "name": "Copy",
@@ -22,10 +28,10 @@
             "deviceId": "emulator-5558"
         },
         {
-            "name": "Realme",
+            "name": "SamsungA6+",
             "request": "launch",
             "type": "dart",
-            "deviceId": "R87DXO7LY9C6KB69",
+            "deviceId": "2b89e0b1",
         },
         {
             "name": "Linux",
