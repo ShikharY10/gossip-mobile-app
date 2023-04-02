@@ -2,16 +2,17 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get_it/get_it.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:vajra/scheme/security_scheme.dart';
 import 'database/config.dart';
 import 'src/auth/signupotp.dart';
 import 'src/screens/home/navigation.dart';
 import 'utility/extra/themes.dart';
 import 'package:path_provider/path_provider.dart';
 import 'utility/network/internet.dart';
+import 'package:vajra/vajra.dart';
 
 bool isUserRegistered = false;
 
@@ -49,10 +50,9 @@ void creatFileStructure(DataBase db) async {
 }
 
 void getPermissionAndCreateDir(DataBase db) async {
-  bool res = await FlutterContacts.requestPermission();
   PermissionStatus status2 = await Permission.storage.request();
-  PermissionStatus status1 =  await Permission.manageExternalStorage.request();
-  if (!res || !status2.isGranted) {
+  // PermissionStatus status1 =  await Permission.manageExternalStorage.request();
+  if (!status2.isGranted) {
     SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop');
   }
   creatFileStructure(db);
@@ -99,5 +99,15 @@ Future<void> main() async {
   isUserRegistered = await db.flutterInit(directory.path);
 
   GetIt.I.registerSingleton<DataBase>(db, instanceName: "db");
+
+  // Initializing Vajra class
+  Vajra authClient = Vajra("auth", directory.path, basePath: "http://10.0.2.2:10220/api/v1");
+  await authClient.initialize();
+  authClient.setDefaultAuthorization(SecurityScheme.bearer, "body", "token");
+
+  Vajra client = Vajra("client", directory.path, basePath: "http://10.0.2.2:10221/api/v1");
+  await client.initialize();
+  client.setDefaultAuthorization(SecurityScheme.bearer, "body", "token");
+
   runApp(Phoenix(child: MyApp(db)));
 }

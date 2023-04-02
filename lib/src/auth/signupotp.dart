@@ -1,16 +1,12 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'dart:convert';
-import 'dart:io';
-import 'package:get_it/get_it.dart';
-import 'package:gossip_frontend/main.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:vajra/vajra.dart';
 import 'package:yaml/yaml.dart';
-import '../../apiCallers/caller.dart';
 import '../../apiCallers/routes.dart';
 import '../../database/config.dart';
-import '../../utility/utils.dart';
 import 'login.dart';
 import 'signup.dart';
 
@@ -25,6 +21,7 @@ class WelcomePage extends StatefulWidget {
 class _WelcomePageState extends State<WelcomePage> {
   late DataBase db;
   late Routes routes;
+  late Vajra vajraClient;
 
   TextEditingController emailController = TextEditingController();
   TextEditingController otpController = TextEditingController();
@@ -35,31 +32,33 @@ class _WelcomePageState extends State<WelcomePage> {
   String buttonLabel = "Get OTP";
   String authToken = "";
   bool showError = false;
+  String errorMsg = "";
 
-  loadConfiguration() {
-    Future<Routes> futureRoutes = getDynamicRoutes();
-    futureRoutes.then((route) {
-      routes = route;
-      if (route.isDefault) {
-        setState(() {
-          isReady = true;
-          showError = true;
-        });
-      } else {
-        setState(() {
-          isReady = true;
-          showError = false;
-        });
-      }
-    });
-  }
+  // loadConfiguration() {
+  //   Future<Routes> futureRoutes = getDynamicRoutes();
+  //   futureRoutes.then((route) {
+  //     routes = route;
+  //     if (route.isDefault) {
+  //       setState(() {
+  //         isReady = true;
+  //         showError = true;
+  //       });
+  //     } else {
+  //       setState(() {
+  //         isReady = true;
+  //         showError = false;
+  //       });
+  //     }
+  //   });
+  // }
 
   @override
   initState() {
     super.initState();
     db = getDataBase();
+    vajraClient = getVajra("auth");
 
-    loadConfiguration();
+    // loadConfiguration();
   }
 
 
@@ -224,18 +223,19 @@ class _WelcomePageState extends State<WelcomePage> {
                 ],
               ),
             ),
-            isReady ? SizedBox(width: 0, height: 0) : Container(
-              alignment: Alignment.center,
-              color: Color.fromARGB(101, 80, 105, 189),
-              child: CircularProgressIndicator(),
-            ),
+            // isReady ? SizedBox(width: 0, height: 0) : Container(
+            //   alignment: Alignment.center,
+            //   color: Color.fromARGB(101, 80, 105, 189),
+            //   child: CircularProgressIndicator(),
+            // ),
             showError ? Positioned(
               bottom: 2.0,
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Container(
+                  width: MediaQuery.of(context).size.width-20,
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(101, 80, 105, 189),
+                    color: Color.fromARGB(199, 0, 0, 0),
                     borderRadius: BorderRadius.all(Radius.circular(50))
                   ),
                   child: Row(
@@ -244,23 +244,17 @@ class _WelcomePageState extends State<WelcomePage> {
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Icon(Icons.error, color: Colors.red),
                       ),
-                      Text("Error while fetching configurations."),
-                      InkWell(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                          child: Text("Retry",
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Text(errorMsg,
                             style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green
-                            ),
+                              color: Color.fromARGB(255, 255, 17, 0)
+                            )
                           ),
                         ),
-                        onTap: () {
-                          loadConfiguration();
-                        },
                       ),
                       IconButton(
+                        splashRadius: 24,
                         icon: Icon(Icons.cancel),
                         onPressed: () {
                           setState(() {
@@ -290,16 +284,17 @@ class _WelcomePageState extends State<WelcomePage> {
       setState(() {
         progressBar = true;
       });
-      Map<String, dynamic> result = await getOTP(emailController.text);
-      if (result["ok"]) {
+      VajraResponse result = await getOTP(emailController.text);
+      if (result.statusCode == 201) {
         setState(() {
-          authToken = result["token"];
           progressBar = false;
           isGetOtpButtonPressed = true;
           buttonLabel = "Varify OTP";
         });
       } else {
         setState(() {
+          errorMsg = result.errorMessage;
+          showError = true;
           progressBar = false;
         });
       }
@@ -307,8 +302,8 @@ class _WelcomePageState extends State<WelcomePage> {
       setState(() {
         progressBar = true;
       });
-      bool result = await varifyOTP(otpController.text);
-      if (result) {
+      VajraResponse result = await varifyOTP(otpController.text);
+      if (result.statusCode == 202) {
         setState(() {
           progressBar = false;
           isGetOtpButtonPressed = false;
@@ -325,36 +320,42 @@ class _WelcomePageState extends State<WelcomePage> {
       } else {
         setState(() {
           progressBar = false;
+          errorMsg = result.errorMessage;
           showError = true;
         });
       }
     }           
   }
 
-  Future<Map<String, dynamic>> getOTP(String email) async {    
-    Routes routes = Routes();
-    await routes.loadPath();
-    print("Path: " + routes.requestSignupOTP);
-    http.Response response = await Caller.postCall(routes.requestSignupOTP, {"email": email});
-    if (response.statusCode == 201) {
-      Map<String, dynamic> responseBody = json.decode(String.fromCharCodes(response.bodyBytes));
-      String token = responseBody["token"];
-      return {"token": token, "ok": true};
-    } else {
-      return {"ok": false};
-    }
+  Future<VajraResponse> getOTP(String email) async {    
+    // Routes routes = Routes();
+    // await routes.loadPath();
+    // print("Path: " + routes.requestSignupOTP);
+    // http.Response response = await Caller.postCall(routes.requestSignupOTP, {"email": email});
+    // if (response.statusCode == 201) {
+    //   Map<String, dynamic> responseBody = json.decode(String.fromCharCodes(response.bodyBytes));
+    //   String token = responseBody["token"];
+    //   return {"token": token, "ok": true};
+    // } else {
+    //   return {"ok": false};
+    // }
+
+    VajraResponse response = await vajraClient.post("/requestsignupotp", {"email": email});
+    return response;
   }
 
-  Future<bool> varifyOTP(String otp) async {
-    Routes routes = Routes();
-    await routes.loadPath();
-    http.Response response = await Caller.postCall(routes.varifySignupOTP, {"otp": otp}, header: {"Authorization": "Bearer " + authToken});
-    print(json.decode(String.fromCharCodes(response.bodyBytes)));
-    if (response.statusCode == 202) {
-      return true;
-    } else {
-      return false;
-    }
+  Future<VajraResponse> varifyOTP(String otp) async {
+    // Routes routes = Routes();
+    // await routes.loadPath();
+    // http.Response response = await Caller.postCall(routes.varifySignupOTP, {"otp": otp}, header: {"Authorization": "Bearer " + authToken});
+    // print(json.decode(String.fromCharCodes(response.bodyBytes)));
+    // if (response.statusCode == 202) {
+    //   return true;
+    // } else {
+    //   return false;
+    // }
+    VajraResponse response = await vajraClient.post("/varifysignupotp", {"otp": otp}, sendCookie: true);
+    return response;
   }
 
   void getDynamicRoutesT() async {
