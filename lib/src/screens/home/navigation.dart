@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import '../../../apiCallers/routes.dart';
 import '../../../broker/broker.dart';
 import '../../../database/config.dart';
-import '../../../utility/utils.dart';
 import 'feeds/home.dart';
 import 'messages/message.dart';
 import 'profile/profile.dart';
@@ -22,17 +20,13 @@ class _NavigationState extends State<Navigation> {
   late DataBase db;
 
   _webSocketConnector() async {
-    Routes routes = await loadDynamicRoutes();
-    String? path = await routes.webSocket;
-    if (path != null) {
-      String? token = db.get("tempBox", "token");
-      if (token != null) {
-        print("trying to conenct");
-        WebSocketConnector wsConnector = WebSocketConnector();
-        Future<void> future = wsConnector.connect(path, token);
-        print("going to listen");
-        future.then((value) => wsConnector.listen());
-      }
+    String? token = db.get("tempBox", "token");
+    if (token != null) {
+      print("trying to conenct");
+      WebSocketConnector wsConnector = WebSocketConnector();
+      Future<void> future = wsConnector.connect("ws://10.2.2.0/secure/connect", token);
+      print("going to listen");
+      future.then((value) => wsConnector.listen());
     }
   }
 

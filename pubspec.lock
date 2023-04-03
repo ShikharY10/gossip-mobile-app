@@ -979,7 +979,7 @@ packages:
       path: "/home/shikhary10/Main/Projects/vajra"
       relative: false
     source: path
-    version: "0.0.3"
+    version: "0.0.4"
   vector_math:
     dependency: transitive
     description:

@@ -3,9 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:crypton/crypton.dart';
 import 'package:flutter/material.dart';
 import 'package:gossip_frontend/database/models.dart';
-
-import '../../../../apiCallers/caller.dart';
-import '../../../../apiCallers/routes.dart';
+import 'package:vajra/vajra.dart';
 import '../../../../database/config.dart';
 
 class ShowUserDetails extends StatefulWidget {
@@ -165,9 +163,6 @@ class _ShowUserDetailsState extends State<ShowUserDetails> {
                             Future.delayed(const Duration(seconds: 1), () async {
                               String? token = db.get("tempBox", "token");
 
-                              Routes routes = Routes();
-                              await routes.loadPath();
-
                               RSAKeypair keyPair = RSAKeypair.fromRandom();
 
                               PartnerRequest partnerRequest = PartnerRequest();
@@ -181,35 +176,31 @@ class _ShowUserDetailsState extends State<ShowUserDetails> {
                               partnerRequest.targetName = widget.data["name"];
                               partnerRequest.targetUsername = widget.data["username"];
 
-                              Future<http.Response> futureResponse = Caller.postCall(
-                                routes.partnerRequest, 
+                              Vajra vajraClient = getVajra("client");
+                              VajraResponse response = await vajraClient.post(
+                                "partnerrequest",
                                 partnerRequest.toMap(),
-                                header: {"Authorization": "Bearer " + token!}
+                                secured: true,
+                                sendCookie: true
                               );
 
-                              futureResponse.then((response) {
-                                print("requestedId: ${partnerRequest.requesterId}");
-                                print("ResponseCode: ${response.statusCode}");
-                                print("BOdy: ${json.decode(String.fromCharCodes(response.bodyBytes))}");
+                              if (response.statusCode == 200) {
+                                String key = "parterrequested." + partnerRequest.targetId;
+                                myData.yourPartnerRequests.add(key);
+                                
+                                db.set("userBox", "myData", myData.toString());
+                                db.set("userBox", key, partnerRequest.toString());
+                                db.set("tempBox", "privatekey.${partnerRequest.id}", base64.encode(keyPair.privateKey.toFormattedPEM().codeUnits));
 
-                                if (response.statusCode == 200) {
-                                  String key = "parterrequested." + partnerRequest.targetId;
-                                  myData.yourPartnerRequests.add(key);
-                                  
-                                  db.set("userBox", "myData", myData.toString());
-                                  db.set("userBox", key, partnerRequest.toString());
-                                  db.set("tempBox", "privatekey.${partnerRequest.id}", base64.encode(keyPair.privateKey.toFormattedPEM().codeUnits));
-
-                                  setState(() {
-                                    isRequestedSending = false;
-                                    isRequestAlreadySent = true;
-                                  });
-                                } else {
-                                  setState(() {
-                                    isRequestedSending = false;
-                                  });
-                                }
-                              });
+                                setState(() {
+                                  isRequestedSending = false;
+                                  isRequestAlreadySent = true;
+                                });
+                              } else {
+                                setState(() {
+                                  isRequestedSending = false;
+                                });
+                              }
                             });
                           }
                         },

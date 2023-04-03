@@ -254,7 +254,6 @@ class _ShowProfilePictureState extends State<ShowProfilePicture> {
     setState(() {
       fetchingImage = true;
     });
-    Routes routes = getRoutes();
 
     try {
       VajraResponse response = await vajraClient.get(

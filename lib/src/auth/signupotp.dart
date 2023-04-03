@@ -5,7 +5,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:vajra/vajra.dart';
 import 'package:yaml/yaml.dart';
-import '../../apiCallers/routes.dart';
 import '../../database/config.dart';
 import 'login.dart';
 import 'signup.dart';
@@ -20,7 +19,6 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> {
   late DataBase db;
-  late Routes routes;
   late Vajra vajraClient;
 
   TextEditingController emailController = TextEditingController();

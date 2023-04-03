@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:vajra/vajra.dart';
 import '../../../../apiCallers/caller.dart';
 import '../../../../apiCallers/routes.dart';
 import '../../../../database/config.dart';
@@ -24,6 +25,8 @@ class _PeopleState extends State<People> {
   late Future<List<dynamic>> futureResult;
   late List<dynamic> searchResult;
 
+  late Vajra vajraClient;
+
   TextEditingController searchController = TextEditingController();
   late DataBase db;
   User myData = User();
@@ -32,6 +35,8 @@ class _PeopleState extends State<People> {
   void initState() {
     super.initState();
     db = getDataBase();
+    vajraClient = getVajra("client");
+
     String? mySavedData = db.get("userBox", "mydata");
     if (mySavedData != null) {
       myData.toObject(mySavedData);
@@ -295,33 +300,31 @@ class _PeopleState extends State<People> {
   }
 
   Future<Map<String, dynamic>> getUserDetails(String id) async {
-    Routes route = Routes();
-    await route.loadPath();
-    http.Response response = await Caller.getCall(
-      route.getUserDetails(id),
-      header: {"Authorization": "Bearer " + myData.token}
+
+    VajraResponse response = await vajraClient.get(
+      "getuserdetails/$id",
+      secured: true,
+      sendCookie: true,
     );
+
     if (response.statusCode == 200) {
-      Map<String, dynamic> responseBody = json.decode(String.fromCharCodes(response.bodyBytes));
-      return responseBody;
+      return (response.body as Map<String, dynamic>);
     } else {
       return {};
     }
   }
 
   Future<List<dynamic>> searchUsername(String username) async {
-    Routes route = Routes();
-    await route.loadPath();
-    http.Response response = await Caller.getCall(
-      route.searchUsername(username),
-      header: {"Authorization": "Bearer " + myData.token}
+
+    VajraResponse response = await vajraClient.get(
+      "isusernameawailable",
+      secured: true,
+      sendCookie: true,
+      queries: {"username": username}
     );
+
     if (response.statusCode == 200) {
-      dynamic result = json.decode(String.fromCharCodes(response.bodyBytes));
-      if (result == null) {
-        return [];
-      }
-      return result;
+      return (response.body as List<dynamic>);
     } else {
       return [];
     }
@@ -387,15 +390,15 @@ class _PeopleTileState extends State<PeopleTile> {
   }
 
   Future<Map<String, dynamic>> getUserDetails(String id) async {
-    Routes route = Routes();
-    await route.loadPath();
-    http.Response response = await Caller.getCall(
-      route.getUserDetails(id),
-      header: {"Authorization": "Bearer " + widget.token}
+    Vajra vajraClient = getVajra("client");
+    VajraResponse response = await vajraClient.get(
+      "getuserdetails/$id",
+      secured: true,
+      sendCookie: true,
     );
+
     if (response.statusCode == 200) {
-      Map<String, dynamic> responseBody = json.decode(String.fromCharCodes(response.bodyBytes));
-      return responseBody;
+      return (response.body as Map<String, dynamic>);
     } else {
       return {};
     }
