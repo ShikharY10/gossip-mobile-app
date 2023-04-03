@@ -48,7 +48,6 @@ dependencies:
   protobuf: ^2.0.1
   flutter_secure_storage: ^4.2.1
   connectivity_plus: ^2.3.0
-  flutter_contacts: ^1.1.4
   device_info_plus:
   grouped_list: ^4.2.0
   intl: ^0.17.0
@@ -69,6 +68,8 @@ dependencies:
   yaml: ^3.1.1
   get_it: ^7.2.0
   eva_icons_flutter: ^3.1.0
+  vajra:
+    path: /home/shikhary10/Main/Projects/vajra
 
 dev_dependencies:
   flutter_test:

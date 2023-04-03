@@ -8,20 +8,20 @@ class User {
   String name;
   String username;
   String email;
-  String messageId;
+  String deliveryId;
   String role;
   String token;
+  List<String> posts = [];
   List<String> partners = [];
   List<String> partnerRequests = [];
   List<String> yourPartnerRequests = [];
-  List<String> posts = [];
     
   User({
     this.id = "",
     this.name = "",
     this.username = "",
     this.email = "", 
-    this.messageId = "",
+    this.deliveryId = "",
     this.role = "",
     this.token = "",
   });
@@ -32,7 +32,7 @@ class User {
     name = mapData["name"];
     username = mapData["username"];
     email = mapData["email"];
-    messageId = mapData["messageId"];
+    deliveryId = mapData["deliveryId"];
     role = mapData["role"];
     token = mapData["token"];
 
@@ -61,7 +61,7 @@ class User {
     data["name"] = name;
     data["username"] = username;
     data["email"] = email;
-    data["messageId"] = messageId;
+    data["deliveryId"] = deliveryId;
     data["role"] = role;
     data["token"] = token;
 
