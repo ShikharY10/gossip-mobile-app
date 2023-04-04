@@ -103,7 +103,7 @@ Future<void> main() async {
   // Initializing Vajra class
   Vajra authClient = Vajra("auth", directory.path, basePath: "http://10.0.2.2:10220/api/v1");
   await authClient.initialize();
-  authClient.setDefaultAuthorization(SecurityScheme.bearer, "body", "token");
+  authClient.setDefaultAuthorization(SecurityScheme.bearer, "body", "accessToken");
 
   Vajra client = Vajra("client", directory.path, basePath: "http://10.0.2.2:10221/api/v1");
   await client.initialize();
