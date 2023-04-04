@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../utility/widget/notice_dialog.dart';
+import 'account_settings.dart';
+import 'profile_settings.dart';
+import 'security_settings.dart';
+
 
 class Setting extends StatefulWidget {
   const Setting({Key? key}) : super(key: key);
@@ -11,23 +16,99 @@ class Setting extends StatefulWidget {
 class _SettingState extends State<Setting> {
 
   bool showError = false;
-  String errorMsg = "";
+  String errorMsg = "error";
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Settings"),
+        elevation: 0,
+        backgroundColor: const Color.fromRGBO(28, 29, 77, 1),
+      ),
       backgroundColor: const Color.fromRGBO(28, 29, 77, 1),
       body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 60, bottom: 40, right: 20, left: 20),
-            child: ListView()
+          ListView(
+            children: [
+              ListTile(
+                leading: const Icon(
+                  Icons.people,
+                  size: 30,
+                  color: Colors.white
+                ),
+                title: const Text("Profile",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+                horizontalTitleGap: 10,
+                onTap: () {
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(
+                      builder: (context) => const ProfleSettings()
+                    )
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(
+                  Icons.security,
+                  size: 30,
+                  color: Colors.white
+                ),
+                title: const Text("Security",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+                horizontalTitleGap: 10,
+                onTap: () {
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(
+                      builder: (context) => const SecuritySettings()
+                    )
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(
+                  Icons.account_box,
+                  size: 30,
+                  color: Colors.white
+                ),
+                title: const Text("Account",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+                horizontalTitleGap: 10,
+                onTap: () {
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(
+                      builder: (context) => const AccountSettings()
+                    )
+                  );
+                },
+              ),
+            ],
           ),
-          ErrorDialog(
+          NoticeDialog(
             showError,
             errorMsg,
-            onCloseBtnPressed: () {},
+            MediaQuery.of(context).size.width-20,
+            onCloseBtnPressed: () {
+              setState(() {
+                showError = false;
+              });
+            },
           )
         ],
       ),
@@ -35,53 +116,3 @@ class _SettingState extends State<Setting> {
   }
 }
 
-class ErrorDialog extends StatefulWidget {
-  final bool showError;
-  final String errorMsg;
-
-  final void Function() onCloseBtnPressed;
-
-  const ErrorDialog(this.showError, this.errorMsg, {required this.onCloseBtnPressed, Key? key}) : super(key: key);
-
-  @override
-  State<ErrorDialog> createState() => _ErrorDialogState();
-}
-
-class _ErrorDialogState extends State<ErrorDialog> {
-  @override
-  Widget build(BuildContext context) {
-    return widget.showError ? Positioned(
-      bottom: 2.0,
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Container(
-          decoration: const BoxDecoration(
-            color: Color.fromARGB(101, 80, 105, 189),
-            borderRadius: BorderRadius.all(Radius.circular(50))
-          ),
-          child: Row(
-            children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: Icon(Icons.error, color: Colors.red),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Text(widget.errorMsg,
-                    style: const TextStyle(
-                      color: Color.fromARGB(255, 255, 17, 0)
-                    )
-                  )
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.cancel),
-                onPressed: widget.onCloseBtnPressed,
-              )
-            ],
-          )
-        ),
-      ),
-    ) : const SizedBox();
-  }
-}

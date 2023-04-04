@@ -6,6 +6,8 @@ import '../../../../apiCallers/caller.dart';
 import '../../../../apiCallers/routes.dart';
 import '../../../../database/config.dart';
 import '../../../../database/models.dart';
+import 'settings/settings.dart';
+import 'show_avatar.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -80,7 +82,14 @@ class _ProfileState extends State<Profile> {
                         children: [
                           Expanded(
                             flex: 3,
-                            child: ShowProfilePicture(myData.id),
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 10.0),
+                              child: ShowProfilePicture(
+                                myData.id,
+                                minRadius: 30,
+                                maxRadius: 40,
+                              ),
+                            ),
                           ),
                           Expanded(
                             flex: 7,
@@ -166,7 +175,14 @@ class _ProfileState extends State<Profile> {
                           splashColor: Colors.pink,
                           color: Colors.white,
                           icon: const Icon(Icons.settings),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context, 
+                              MaterialPageRoute(
+                                builder: (context) => const Setting()
+                              )
+                            );
+                          },
                         ),
                       )
                     )
@@ -232,15 +248,15 @@ class _ProfileState extends State<Profile> {
   }
 }
 
-class ShowProfilePicture extends StatefulWidget {
+class ShowProfilePicture1 extends StatefulWidget {
   final String id;
-  const ShowProfilePicture(this.id, {Key? key}) : super(key: key);
+  const ShowProfilePicture1(this.id, {Key? key}) : super(key: key);
 
   @override
-  State<ShowProfilePicture> createState() => _ShowProfilePictureState();
+  State<ShowProfilePicture1> createState() => _ShowProfilePicture1State();
 }
 
-class _ShowProfilePictureState extends State<ShowProfilePicture> {
+class _ShowProfilePicture1State extends State<ShowProfilePicture1> {
 
   late DataBase db;
   late Vajra vajraClient;
