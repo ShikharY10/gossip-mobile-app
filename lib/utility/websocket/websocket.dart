@@ -62,39 +62,50 @@ class WebSocket {
 
   connect() async {
     try {
+      print("connnecting | uri: $address");
       channel = IOWebSocketChannel.connect(
         Uri.parse(address + "?token=" + token),
       );
+      
+      print("connected");
       channel.ready.then((value) {
         print("Connected to Websocket");
         isConnected = true;
         listen();
       });
-    } on SocketException {
-      print("Unable To Connect To The Server!");
-    } on WebSocketChannelException {
-      print("error while connecting to the server");
+    } on Exception catch (e) {
+      print("Error: $e");
     } catch (e) {
       print("Something went wrong while connecting to the server");
+    } finally {
+      print("finally triggered");
     }
   }
 
   listen() async {
     Payload payload = Payload();
-    channel.stream.listen((event) {
-      payload.mergeFromBuffer((event as Uint8List));
-      switch (payload.type) {
-        case "011":
-          controllers.makePartnerRequest(payload.data);
-          break;
-        case "021":
-          controllers.makePartnerResponse(payload.data);
-          break;
-        case "031":
-          controllers.removePartnerNotify(payload.data);
-          break;     
-        default:
+    channel.stream.listen(
+      (event) {
+        payload.mergeFromBuffer((event as Uint8List));
+        switch (payload.type) {
+          case "011":
+            controllers.makePartnerRequest(payload.data);
+            break;
+          case "021":
+            controllers.makePartnerResponse(payload.data);
+            break;
+          case "031":
+            controllers.removePartnerNotify(payload.data);
+            break;     
+          default:
+        }
+      },
+      onError: (error) {
+        print("LISTNER ERROR: $error");
+      },
+      onDone: () {
+        print("Connection closed");
       }
-    });
+    );
   }
 }

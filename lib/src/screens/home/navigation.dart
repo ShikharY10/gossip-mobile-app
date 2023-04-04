@@ -24,7 +24,7 @@ class _NavigationState extends State<Navigation> {
     if (token != null) {
       print("trying to conenct");
       WebSocketConnector wsConnector = WebSocketConnector();
-      Future<void> future = wsConnector.connect("ws://10.2.2.0/secure/connect", token);
+      Future<void> future = wsConnector.connect("ws://10.0.2.2:10222/connect", token);
       print("going to listen");
       future.then((value) => wsConnector.listen());
     }

@@ -28,17 +28,17 @@ class WebSocketConnector {
     status.then((value) async {
       await _connect(address, token);
     });
-    
   }
 
   _connect(String address, String token) async {
     Directory directoty = GetIt.I.get<Directory>(instanceName: "directory");
-    await Isolate.spawn<IsolateModel>(createIsolate, IsolateModel(
+    Isolate isolate = await Isolate.spawn<IsolateModel>(createIsolate, IsolateModel(
       address,
       mainReceivePort.sendPort,
       token,
       directoty.path
     ));
+    isolate.addErrorListener(mainReceivePort.sendPort);
   }
 
   listen() {
@@ -46,8 +46,13 @@ class WebSocketConnector {
       if (message is SendPort) {
         isolateSendPort = message;
         GetIt.I.registerSingleton<SendPort>(isolateSendPort, instanceName: "isolateSendPort");
-      }
-      else if (message is PartnerRequest) {
+      } else if (message is List) {
+        if (message.isNotEmpty) {
+          print("Isolate Error: ${message[0]}");
+          print("StackTrace: ${message[0]}");
+          print("Type: ${message[1].runtimeType}");
+        }
+      } else if (message is PartnerRequest) {
         HiveListOfString partnerRequests = HiveListOfString();
         String? savedPartnerRequests = _db.get("userBox", "partnerRequests");
         if (savedPartnerRequests != null) {
