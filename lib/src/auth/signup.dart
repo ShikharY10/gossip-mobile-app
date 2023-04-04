@@ -342,7 +342,8 @@ class _SignUpState extends State<SignUp> {
         "avatarExt": imageExt
       },
       sendCookie: true,
-      expectAuthorization: true
+      expectAuthorization: true,
+      timeout: Duration(seconds: 120)
     );
 
     print("response collected");
@@ -353,6 +354,7 @@ class _SignUpState extends State<SignUp> {
       return responseBody;
     } else {
       setState(() {
+        print("errorMSG: ${response1.errorMessage}");
         errorMsg = response1.errorMessage;
         showError = true;
       });
