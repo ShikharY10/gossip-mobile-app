@@ -75,34 +75,50 @@ class User {
   }
 }
 
-class Friend {
-  String? name;
-  String? username;
-  String? userId;
-  String? mid;
-  String? profilepic;
-  String? e2eKey;
-  bool? done;
+class Partner {
+  final String id;
+  final String name;
+  final String username;
+  final String deliveryId;
+  final String eKey;
+  List<String> posts = [];
+  final int partners;
+  final String? status;
+  final bool? done;
 
-  Friend(
+  Partner(
       {this.name  = "",
       this.username = "", 
-      this.userId = "", 
-      this.mid = "", 
-      this.profilepic = "",
-      this.e2eKey = "",
+      this.id = "", 
+      this.deliveryId = "", 
+      this.eKey = "",
+      this.partners = 0,
+      this.status = "",
       this.done = false 
       });
 
-  void toObject(String data) {
+  static Partner toObject(String data) {
     var mapData = json.decode(data);
-    name = mapData["name"];
-    username = mapData["username"];
-    userId = mapData["userId"];
-    mid = mapData["mid"];
-    profilepic = mapData["profilepic"];
-    e2eKey = mapData["e2eKey"];
-    done = mapData["done"];
+
+    List<String> _posts = [];
+
+    for (var post in (mapData["posts"] as List<dynamic>)) {
+      _posts.add(post);
+    } 
+
+    Partner partner = Partner(
+      name: mapData["name"],
+      username: mapData["username"],
+      id: mapData["userId"],
+      deliveryId: mapData["mid"],
+      eKey: mapData["eKey"],
+      status: mapData["status"],
+      done: mapData["done"],
+      partners: mapData["partners"]
+    );
+
+    partner.posts = _posts;
+    return partner;
   }
 
   @override
@@ -110,11 +126,14 @@ class Friend {
     Map<String, dynamic> data = <String, dynamic>{};
     data["name"] = name;
     data["username"] = username;
-    data["userId"] = userId;
-    data["mid"] = mid;
-    data["profilepic"] = profilepic;
-    data["e2eKey"] = e2eKey;
+    data["id"] = id;
+    data["deliveryId"] = deliveryId;
+    data["eKey"] = eKey;
+    data["posts"] = posts;
+    data["status"] = status;
     data["done"] = done;
+    data["partners"] = partners;
+    
     String jsonData = json.encode(data);
     return jsonData;
   }
@@ -450,25 +469,21 @@ class Posts {
   String postId;
   String userId;
   String caption;
-  String description;
-  String imageLocalPath;
-  String imageRemotePath;
-  String imageCdnPath;
+  bool containsImage;
+  bool containsCaption;
   int likes;
-  List<String>? comments;
   int commentCount;
-  List<String>? tags;
-  List<String>? mentions;
-  DateTime? createdAt;
+  List<String> comments = [];
+  List<String> tags = [];
+  List<String> mentions = [];
+  DateTime createdAt = DateTime.now();
 
   Posts({
     this.postId = "",
     this.userId = "",
     this.caption = "",
-    this.description = "",
-    this.imageLocalPath = "",
-    this.imageRemotePath = "",
-    this.imageCdnPath = "",
+    this.containsImage = false,
+    this.containsCaption = false,
     this.likes = 0,
     this.commentCount = 0,
   });
@@ -478,16 +493,23 @@ class Posts {
     postId = mapData["postId"];
     userId = mapData["userId"];
     caption = mapData["caption"];
-    description = mapData["description"];
-    imageLocalPath = mapData["imageLocalPath"];
-    imageRemotePath = mapData["imageRemotePath"];
-    imageCdnPath = mapData["imageCdnPath"];
+    containsImage = mapData["containsImage"];
+    containsCaption = mapData["containsCaption"];
     likes = mapData["likes"];
-    comments = mapData["comments"];
     commentCount = mapData["commentCount"];
-    tags = mapData["tags"];
-    mentions = mapData["mentions"];
-    createdAt = mapData["createdAt"];
+    createdAt = DateTime.parse(mapData["createdAt"]);
+
+    for (var comment in (mapData["comments"] as List<dynamic>)) {
+      comments.add(comment);
+    }
+
+    for (var tag in (mapData["tags"] as List<dynamic>)) {
+      tags.add(tag);
+    }
+
+    for (var mention in (mapData["mentions"] as List<dynamic>)) {
+      mentions.add(mention);
+    }
   }
 
   @override
@@ -496,16 +518,15 @@ class Posts {
     mapData["postId"] = postId;
     mapData["userId"] = userId;
     mapData["caption"] = caption;
-    mapData["description"] = description;
-    mapData["imageLocalPath"] = imageLocalPath;
-    mapData["imageRemotePath"] = imageRemotePath;
-    mapData["imageCdnPath"] = imageCdnPath;
+    mapData["containsImage"] = containsImage;
+    mapData["containsCaption"] = containsCaption;
     mapData["likes"] = likes;
-    mapData["comments"] = comments;
     mapData["commentCount"] = commentCount;
+    mapData["comments"] = comments;
     mapData["tags"] = tags;
     mapData["mentions"] = mentions;
-    mapData["createdAt"] = createdAt;
+    mapData["createdAt"] = createdAt.toIso8601String();
+
     String jsonData = json.encode(mapData);
     return jsonData;
   }
