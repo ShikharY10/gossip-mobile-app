@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get_it/get_it.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -80,12 +81,14 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      themeMode: ThemeMode.system,
-      debugShowCheckedModeBanner: false,
-      theme: lightThemeData(context),
-      darkTheme: darkThemeData(context),
-      routes: {"/": (context) => isUserRegistered ? const Navigation() : const WelcomePage()},
+    return Portal(
+      child: MaterialApp(
+        themeMode: ThemeMode.system,
+        debugShowCheckedModeBanner: false,
+        theme: lightThemeData(context),
+        darkTheme: darkThemeData(context),
+        routes: {"/": (context) => isUserRegistered ? const Navigation() : const WelcomePage()},
+      ),
     );
   }
 }

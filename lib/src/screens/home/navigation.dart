@@ -54,7 +54,7 @@ class _NavigationState extends State<Navigation> {
                   const Home(),
                   const Message(),
                   const People(),
-                  const Profile(),
+                  Profile(),
                 ][indexSelected]
               )
             ),

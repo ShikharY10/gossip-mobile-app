@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'add_new_partner.dart';
+import 'chats/chat.dart';
+
 class Message extends StatefulWidget {
   const Message({Key? key}) : super(key: key);
 
@@ -39,8 +42,15 @@ class _MessageState extends State<Message> {
                       type: MaterialType.transparency,
                       child: IconButton(
                         splashRadius: 23,
-                        icon: Icon(Icons.people_alt_rounded),
-                        onPressed: () {},
+                        icon: const Icon(Icons.add_comment),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AddNewPartnerChat()
+                            )
+                          );
+                        },
                       ),
                     )
                   )
@@ -56,7 +66,7 @@ class _MessageState extends State<Message> {
           Expanded(
             child: ListView(
               children: [
-                for (int i = 0; i < 20; i++)
+                for (int i = 0; i < 5; i++)
                   ListTile(
                     leading: CircleAvatar(backgroundColor: Colors.amber,),
                     title: Text(
@@ -73,7 +83,17 @@ class _MessageState extends State<Message> {
                       )
                     ),
                     dense: true,
-                  )
+                    onTap: () {
+                      Navigator.push(
+                        context, 
+                        MaterialPageRoute(
+                          builder: (context) => const ChatWindow("")
+                        )
+                      );
+                    }
+                      
+                  ),
+                  
               ],
             )
           ),

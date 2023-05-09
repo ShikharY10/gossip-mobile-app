@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:gossip_frontend/utility/network/internet.dart';
+import 'add_feed/add_feeds.dart';
 import 'post.dart';
 
 class Home extends StatefulWidget {
@@ -55,11 +54,19 @@ class _HomeState extends State<Home> {
                         splashRadius: 23,
                         icon: const Icon(Icons.add_box_rounded),
                         onPressed: () async {
-                          Connectivity connectivity = GetIt.I.get<Connectivity>(instanceName: "connectivity");
-                          String b = await connectivity.getBatteryLevel();
-                          print(b);
-                          bool i = await connectivity.getInternetConnectivityStatus();
-                          print("Internet: $i");
+
+                          // Connectivity connectivity = GetIt.I.get<Connectivity>(instanceName: "connectivity");
+                          // String b = await connectivity.getBatteryLevel();
+                          // print(b);
+                          // bool i = await connectivity.getInternetConnectivityStatus();
+                          // print("Internet: $i");
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AddNewFeed()
+                            )
+                          );
                         },
                       ),
                     )
@@ -97,59 +104,6 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-
 }
 
 
-
-// Widget moreMenu() {
-//   return Dialog(
-//     alignment: Alignment.centerRight,
-//     backgroundColor: Color.fromARGB(255, 11, 11, 27),
-//     // iconPadding: EdgeInsets.zero,
-//     insetPadding: EdgeInsets.zero,
-//     // titlePadding: EdgeInsets.zero,
-//     // buttonPadding: EdgeInsets.zero,
-//     // actionsPadding: EdgeInsets.zero,
-//     // contentPadding: EdgeInsets.zero,
-//     clipBehavior: Clip.hardEdge,
-//     child: SizedBox(
-//       width: 10,
-//       child: Column(
-//         mainAxisSize: MainAxisSize.min,
-//         children: [
-//           Container(
-//             alignment: Alignment.centerLeft,
-//             child: Padding(
-//               padding: const EdgeInsets.all(8.0),
-//               child: Text("Mentions"),
-//             ),
-//           ),
-//           Container(
-//             alignment: Alignment.centerLeft,
-//             child: Padding(
-//               padding: const EdgeInsets.all(8.0),
-//               child: Text("Edit"),
-//             ),
-//           ),
-//           Container(
-//             alignment: Alignment.centerLeft,
-//             child: Padding(
-//               padding: const EdgeInsets.all(8.0),
-//               child: Text("Delete"),
-//             ),
-//           ),
-//         ],
-//       ),
-//     ),
-//   );
-// }
-
-// IconButton(
-          //   icon: const Icon(Icons.delete),
-          //   onPressed: () async {
-          //     HiveH hiveHandler = GetIt.I.get<HiveH>();
-          //     await hiveHandler.deleteUserData();
-          //     print("User Data Deleted");
-          //   }
-          // ),

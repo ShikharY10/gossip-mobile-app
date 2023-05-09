@@ -5,7 +5,7 @@ import 'package:vajra/vajra.dart';
 import '../../../../../database/config.dart';
 import '../../../../../database/models.dart';
 import '../../../../../utility/widget/notice_dialog.dart';
-import '../show_avatar.dart';
+import '../../../../../utility/widget/show_avatar.dart';
 
 class ProfleSettings extends StatefulWidget {
   const ProfleSettings({Key? key}) : super(key: key);
