@@ -1,12 +1,9 @@
 
 // ignore_for_file: avoid_print
-
-import 'dart:io';
 import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:web_socket_channel/io.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 import '../../database/config.dart';
 import '../../schema/schema.pb.dart';
 import 'controllers.dart';
@@ -91,10 +88,10 @@ class WebSocket {
           case "011":
             controllers.makePartnerRequest(payload.data);
             break;
-          case "021":
+          case "012":
             controllers.makePartnerResponse(payload.data);
             break;
-          case "031":
+          case "013":
             controllers.removePartnerNotify(payload.data);
             break;     
           default:

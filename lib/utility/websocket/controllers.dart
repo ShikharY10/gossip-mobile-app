@@ -13,14 +13,13 @@ class Controllers {
   /// for handling a new partner request.
   /// Type: "011"
   makePartnerRequest(List<int> data) {
-    DeliveryPacket deliveryPacket = DeliveryPacket.fromBuffer(data);
     PartnerRequest partnerRequest = PartnerRequest();
-    partnerRequest.toObject(String.fromCharCodes(deliveryPacket.payload));
+    partnerRequest.toObject(String.fromCharCodes(data));
     mainSendPort.send(partnerRequest);
   }
 
   /// for handling a new partner response.
-  /// Type: "021"
+  /// Type: "012"
   makePartnerResponse(List<int> data) {
     DeliveryPacket deliveryPacket = DeliveryPacket.fromBuffer(data);
     PartnerResponse partnerResponse = PartnerResponse();
@@ -29,7 +28,7 @@ class Controllers {
   }
 
   /// for notifying that a partner has remove you.
-  /// Type: "031"
+  /// Type: "013"
   removePartnerNotify(List<int> data) {
     DeliveryPacket deliveryPacket = DeliveryPacket.fromBuffer(data);
     RemovePartnerNotify removePartnerNotify = RemovePartnerNotify();

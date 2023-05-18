@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:crypton/crypton.dart';
 import 'package:flutter/material.dart';
 import 'package:gossip_frontend/database/models.dart';
@@ -33,6 +32,10 @@ class _ShowUserDetailsState extends State<ShowUserDetails> {
     } else {
       return;
     }
+
+    // myData.yourPartnerRequests.remove("parterrequested.${widget.data["id"]}");
+
+    // db.set("userBox", "mydata", myData.toString());
 
     if (myData.yourPartnerRequests.contains("parterrequested.${widget.data["id"]}")) {
       isRequestAlreadySent = true;
@@ -126,7 +129,7 @@ class _ShowUserDetailsState extends State<ShowUserDetails> {
                         ]
                       ),
                     ),
-                    Padding(
+                    (myData.id != widget.data["id"]) ? Padding(
                       padding: const EdgeInsets.only(top: 5.0),
                       child: InkWell(
                         
@@ -178,17 +181,17 @@ class _ShowUserDetailsState extends State<ShowUserDetails> {
 
                               Vajra vajraClient = getVajra("client");
                               VajraResponse response = await vajraClient.post(
-                                "partnerrequest",
+                                "/makepartnerrequest",
                                 partnerRequest.toMap(),
                                 secured: true,
-                                sendCookie: true
                               );
-
+                              print("statusCode: ${response.statusCode}");
+                              print("errorMsg: ${response.errorMessage}");
                               if (response.statusCode == 200) {
                                 String key = "parterrequested." + partnerRequest.targetId;
                                 myData.yourPartnerRequests.add(key);
                                 
-                                db.set("userBox", "myData", myData.toString());
+                                db.set("userBox", "mydata", myData.toString());
                                 db.set("userBox", key, partnerRequest.toString());
                                 db.set("tempBox", "privatekey.${partnerRequest.id}", base64.encode(keyPair.privateKey.toFormattedPEM().codeUnits));
 
@@ -205,7 +208,7 @@ class _ShowUserDetailsState extends State<ShowUserDetails> {
                           }
                         },
                       ),
-                    )
+                    ) : const SizedBox()
                   ],
                 )
               ),
