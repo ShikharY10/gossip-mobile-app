@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vajra/vajra.dart';
 import '../../../../database/config.dart';
 import '../../../../database/models.dart';
+import '../../../../utility/widget/show_avatar.dart';
 import 'requested.dart';
 import 'requests.dart';
 import 'userpopups.dart';
@@ -298,7 +299,7 @@ class _PeopleState extends State<People> {
   Future<Map<String, dynamic>> getUserDetails(String id) async {
 
     VajraResponse response = await vajraClient.get(
-      "getuserdetails/$id",
+      "/getuserdetails/$id",
       secured: true,
       sendCookie: true,
     );
@@ -311,19 +312,38 @@ class _PeopleState extends State<People> {
   }
 
   Future<List<dynamic>> searchUsername(String username) async {
-
     VajraResponse response = await vajraClient.get(
-      "isusernameawailable",
+      "/searchusername",
       secured: true,
-      sendCookie: true,
       queries: {"username": username}
     );
-
+    print("statusCode: ${response.statusCode}");
     if (response.statusCode == 200) {
-      return (response.body as List<dynamic>);
-    } else {
+      if (response.body != null) {
+        return (response.body as List<dynamic>);
+      }
+      return [];
+    } else if (response.statusCode == 401) {
+      Vajra authClient = getVajra("auth");
+      VajraResponse response = await authClient.put(
+        "/refreshaccesstoken/${myData.id}",
+        {},
+        sendCookie: true,
+        expectAuthorization: true
+      );
+      print("refresh statusCode: ${response.statusCode}");
+      print("refresh errMsg: ${response.errorMessage}");
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseBody = (response.body as Map<String, dynamic>);
+        myData.token = responseBody["accessToken"];
+        db.set("userBox", "mydata", myData.toString());
+
+        authClient.setAuthorizationToken(myData.token);
+        vajraClient.setAuthorizationToken(myData.token);
+      }
       return [];
     }
+    return [];
   }
 }
 
@@ -344,40 +364,42 @@ class _PeopleTileState extends State<PeopleTile> {
       builder: (context, snapShot) {
         if (snapShot.hasData) {
           Map<String, dynamic> data = (snapShot.data as Map<String, dynamic>);
-          return Material(
-            type: MaterialType.transparency,
-            child: Padding(
-              padding: const EdgeInsets.all(1.0),
-              child: ListTile(
-                onTap: () {
-                  showDialog(
-                    context: context, 
-                    builder: (context) => ShowUserDetails(data: data)
-                  );
-                },
-                dense: true,
-                minVerticalPadding: 0,
-                title: Text(data["name"] ?? "unknown", 
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  )
+          if (data.isNotEmpty) {
+              return Material(
+              type: MaterialType.transparency,
+              child: Padding(
+                padding: const EdgeInsets.all(1.0),
+                child: ListTile(
+                  onTap: () {
+                    showDialog(
+                      context: context, 
+                      builder: (context) => ShowUserDetails(data: data)
+                    );
+                  },
+                  dense: true,
+                  minVerticalPadding: 0,
+                  title: Text(data["name"] ?? "unknown", 
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    )
+                  ),
+                  subtitle: Text(data["username"] ?? "unknown",
+                    style: const TextStyle(
+                      fontSize: 15,
+                      color: Color.fromARGB(255, 68, 171, 255),
+                    )
+                  ),
+                  // tileColor: Color.fromARGB(255, 153, 156, 168),
+                  leading: ShowProfilePicture(data["id"]),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16)
                 ),
-                subtitle: Text(data["username"] ?? "unknown",
-                  style: const TextStyle(
-                    fontSize: 15,
-                    color: Color.fromARGB(255, 68, 171, 255),
-                  )
-                ),
-                // tileColor: Color.fromARGB(255, 153, 156, 168),
-                leading: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  backgroundImage: NetworkImage(data["avatar"]),
-                ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16)
               ),
-            ),
-          );
+            );
+          } else {
+            return const SizedBox();
+          }
+          
         } else {
           return const SizedBox();
         }
@@ -388,9 +410,8 @@ class _PeopleTileState extends State<PeopleTile> {
   Future<Map<String, dynamic>> getUserDetails(String id) async {
     Vajra vajraClient = getVajra("client");
     VajraResponse response = await vajraClient.get(
-      "getuserdetails/$id",
+      "/getuserdetails/$id",
       secured: true,
-      sendCookie: true,
     );
 
     if (response.statusCode == 200) {
