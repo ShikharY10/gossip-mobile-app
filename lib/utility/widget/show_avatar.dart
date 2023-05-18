@@ -35,7 +35,6 @@ class _ShowProfilePictureState extends State<ShowProfilePicture> {
       VajraResponse response = await vajraClient.get(
         "/getuseravatar/${widget.id}",
         secured: true,
-        sendCookie: true,
         queries: {
           "width": "200",
           "height": "200",
@@ -46,12 +45,9 @@ class _ShowProfilePictureState extends State<ShowProfilePicture> {
       setState(() {
         fetchingImage = false;
       });
-      
-      print("statusCode: ${response.statusCode}");
-      print("errorMsg: ${response.errorMessage}");
 
       if (response.statusCode == 200) {
-        db.set("imageBox", "user.profilepic.${widget.id}", String.fromCharCodes(response.body));
+        await db.set("imageBox", "user.profilepic.${widget.id}", String.fromCharCodes(response.body));
         imageData = response.body;
         setState(() {
           isImageLoaded = true;
@@ -67,23 +63,6 @@ class _ShowProfilePictureState extends State<ShowProfilePicture> {
         isImageLoaded = false;
       });
     }
-
-    // try {
-    //   Future<http.Response> futureResponse = Caller.getCall(routes.getavatar("${widget.id}?width=200&height=200&scale=0.70"));
-    //   futureResponse.then((response) {
-    //     if (response.statusCode == 200) {
-    //       db.set("imageBox", "user.profilepic.${widget.id}", String.fromCharCodes(response.bodyBytes));
-    //       imageData = response.bodyBytes;
-    //       setState(() {
-    //         isImageLoaded = true;
-    //       });
-    //     }
-    //   });
-    // } catch (e) {
-    //   setState(() {
-    //     isImageLoaded = false;
-    //   });
-    // }
   }
 
   @override
