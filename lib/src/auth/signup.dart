@@ -407,6 +407,21 @@ class _SignUpState extends State<SignUp> {
     db.set("tempBox", "userRegistered", "1");
     db.set("tempBox", "token", user.token);
 
+    Vajra client = getVajra("client");
+    client.setAuthorizationToken(user.token);
+
+    vajraClient.setDefaultReauthorizationScheme(401, (String s) async {
+      print("Refreshing access token");
+      VajraResponse response = await vajraClient.put(
+        "/refreshaccesstoken/" + user.id,
+        {},
+        sendCookie: true,
+        expectAuthorization: true,
+      );
+      print("Access token refreshed");
+      return response.statusCode;
+    });
+
     return true;
   }
 }
